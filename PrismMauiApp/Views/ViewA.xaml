@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="PrismMauiApp.Views.ViewA"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Title of ViewA"
+    NavigationPage.HasBackButton="True"
+    NavigationPage.HasNavigationBar="True">
+    <VerticalStackLayout>
+        <Label
+            HorizontalOptions="Center"
+            Text="Label of ViewA"
+            VerticalOptions="Center" />
+    </VerticalStackLayout>
+</ContentPage>
