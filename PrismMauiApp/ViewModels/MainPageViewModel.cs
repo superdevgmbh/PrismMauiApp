@@ -41,7 +41,7 @@ public class MainPageViewModel : BindableBase
 
         try
         {
-            this.wifiConnector.ConnectToWifi("testssid", "testpsk");
+            this.wifiConnector.ConnectToWifi("ssid", "password");
 
             this.Text = string.Join(",", this.connectivity.ConnectionProfiles);
             //Text = string.Join(",", this.connectivity.NetworkAccess);

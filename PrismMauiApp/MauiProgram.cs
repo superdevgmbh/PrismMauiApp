@@ -3,6 +3,7 @@ using Microsoft.Maui.Controls.Compatibility.Hosting;
 using NLog.Extensions.Logging;
 using PrismMauiApp.Platforms.Services;
 using PrismMauiApp.Services;
+using PrismMauiApp.Services.Logging;
 
 namespace PrismMauiApp;
 
@@ -31,15 +32,14 @@ public static class MauiProgram
                 fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
             });
 
-        #region Microsoft.Extensions.DependencyInjection
+        var logFileReader = new NLogFileReader(NLogLoggerConfiguration.LogFilePath);
+        builder.Services.AddSingleton<ILogFileReader>(logFileReader);
         builder.Services.AddSingleton<IConnectivity>(Connectivity.Current);
         builder.Services.AddSingleton<IWifiConnector, WifiConnector>();
-        #endregion
 
         builder.Services.AddLogging(configure =>
         {
             configure.SetMinimumLevel(LogLevel.Trace);
-            configure.AddDebug();
             configure.AddNLog();
         });
 

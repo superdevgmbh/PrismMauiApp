@@ -1,5 +1,4 @@
-﻿using Prism.Ioc;
-using PrismMauiApp.Platforms.Services;
+﻿using PrismMauiApp.Platforms.Services;
 using PrismMauiApp.Services;
 using PrismMauiApp.ViewModels;
 using PrismMauiApp.Views;
