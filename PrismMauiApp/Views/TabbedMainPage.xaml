@@ -12,6 +12,11 @@
     android:TabbedPage.ToolbarPlacement="Bottom"
     ios:TabbedPage.TranslucencyMode="Default">
 
+    <Page.ToolbarItems>
+        <ToolbarItem
+            Command="{Binding AddCommand}"
+            Text="Add" />
+    </Page.ToolbarItems>
     <NavigationPage Title="Main">
         <x:Arguments>
             <views:MainPage />
@@ -29,7 +34,9 @@
         </x:Arguments>
     </NavigationPage>
 
-    <NavigationPage Title="A" IconImageSource="prism.png">
+    <NavigationPage
+        Title="A"
+        IconImageSource="prism.png">
         <x:Arguments>
             <views:ViewA />
         </x:Arguments>

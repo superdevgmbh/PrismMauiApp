@@ -30,7 +30,7 @@ internal static class PrismStartup
         containerRegistry.RegisterForNavigation<TabbedMainPage, TabbedMainPageViewModel>();
         containerRegistry.RegisterForNavigation<HomePage, HomePageViewModel>();
         containerRegistry.RegisterForNavigation<MainPage, MainPageViewModel>();
-        containerRegistry.RegisterForNavigation<ViewA>();
+        containerRegistry.RegisterForNavigation<ViewA>(App.Pages.ViewA);
 
         containerRegistry.RegisterInstance(() => SemanticScreenReader.Default);
         containerRegistry.RegisterInstance(() => Connectivity.Current);

@@ -1,10 +1,11 @@
-﻿namespace PrismMauiApp;
-
-public partial class App : Application
+﻿namespace PrismMauiApp
 {
-    public App()
+    public partial class App : Application
     {
-        UserAppTheme = AppTheme.Light;
-        InitializeComponent();
+        public App()
+        {
+            this.UserAppTheme = AppTheme.Light;
+            this.InitializeComponent();
+        }
     }
 }
