@@ -2,8 +2,8 @@
 {
     public interface IWifiConnector
     {
-        void ConnectToWifi(string ssid, string password);
-        
-        void Disconnect(string ssid);
+        Task<bool> ConnectToWifi(string ssid, string password, CancellationToken token = default);
+
+        bool DisconnectWifi(string ssid);
     }
 }

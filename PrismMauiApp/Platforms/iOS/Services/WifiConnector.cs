@@ -1,4 +1,5 @@
-﻿using NetworkExtension;
+﻿using Intents;
+using NetworkExtension;
 using PrismMauiApp.Services;
 
 namespace PrismMauiApp.Platforms.Services
@@ -12,21 +13,25 @@ namespace PrismMauiApp.Platforms.Services
             this.wifiManager = new NEHotspotConfigurationManager();
         }
 
-        public void ConnectToWifi(string ssid, string password)
+        public async Task<bool> ConnectToWifi(string ssid, string password, CancellationToken token = default)
         {
             var wifiConfig = new NEHotspotConfiguration(ssid, password, false);
-            this.wifiManager.ApplyConfiguration(wifiConfig, (error) =>
+
+            try
             {
-                if (error != null)
-                {
-                    Console.WriteLine($"Error while connecting to WiFi network {ssid}: {error}");
-                }
-            });
+                await this.wifiManager.ApplyConfigurationAsync(wifiConfig);
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
 
-        public void Disconnect(string ssid)
+        public bool DisconnectWifi(string ssid)
         {
             this.wifiManager.RemoveConfiguration(ssid);
+            return true;
         }
     }
 }

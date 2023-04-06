@@ -35,11 +35,20 @@
                 SemanticProperties.HeadingLevel="Level2"
                 Text="Welcome to Prism for .NET MAUI" />
 
+            <Entry Placeholder="SSID" Text="{Binding SSID}" />
+            <Entry
+                IsPassword="True"
+                Placeholder="Password"
+                Text="{Binding PSK}" />
             <Button
-                Command="{Binding CountCommand}"
+                Command="{Binding ConnectToWifiCommand}"
                 HorizontalOptions="Center"
-                SemanticProperties.Hint="Counts the number of times you click"
-                Text="{Binding Text}" />
+                Text="Connect to Wifi" />
+
+            <Button
+                Command="{Binding DisconnectWifiCommand}"
+                HorizontalOptions="Center"
+                Text="Disconnect" />
 
         </VerticalStackLayout>
     </ScrollView>

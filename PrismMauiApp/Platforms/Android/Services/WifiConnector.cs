@@ -1,54 +1,207 @@
-﻿using Android.Content;
+﻿using System.Collections.Concurrent;
+using Android.Content;
+using Android.Net;
 using Android.Net.Wifi;
+using Microsoft.Extensions.Logging;
 using PrismMauiApp.Services;
+
 
 namespace PrismMauiApp.Platforms.Services
 {
     public class WifiConnector : IWifiConnector
     {
+        private readonly ILogger<WifiConnector> logger;
         private readonly WifiManager wifiManager;
+        private readonly ConnectivityManager connectivityManager;
 
-        public WifiConnector()
+        private readonly ConcurrentDictionary<string, NetworkCallback> networkCallbacks = new ConcurrentDictionary<string, NetworkCallback>();
+
+        public WifiConnector(ILogger<WifiConnector> logger)
         {
-            this.wifiManager = (WifiManager)global::Android.App.Application.Context
-                        .GetSystemService(Context.WifiService);
+            this.logger = logger;
+            this.wifiManager = (WifiManager)Android.App.Application.Context.GetSystemService(Context.WifiService);
+            this.connectivityManager = (ConnectivityManager)Android.App.Application.Context.GetSystemService(Context.ConnectivityService);
         }
 
-        public void ConnectToWifi(string ssid, string password)
+        public async Task<bool> ConnectToWifi(string ssid, string password, CancellationToken token = default)
         {
-            var formattedSsid = $"\"{ssid}\"";
-            var formattedPassword = $"\"{password}\"";
+            this.logger.LogDebug($"ConnectToWifi: ssid={ssid}");
 
-            var wifiConfig = new WifiConfiguration
+            try
             {
-                Ssid = formattedSsid,
-                PreSharedKey = formattedPassword
-            };
+                if (Android.OS.Build.VERSION.SdkInt < Android.OS.BuildVersionCodes.Q)
+                {
+                    var oldSsid = "empty";
+                    var oldBsid = "empty";
+                    try
+                    {
+                        oldSsid = this.wifiManager.ConnectionInfo.SSID.Replace("\"", "");
+                        oldBsid = this.wifiManager.ConnectionInfo.BSSID.Replace("\"", "");
+                    }
+                    catch { }
 
-            var addNetwork = this.wifiManager.AddNetwork(wifiConfig);
+                    var formattedSsid = $"\"{ssid}\"";
+                    var formattedPassword = $"\"{password}\"";
+                    var wifiConfig = new WifiConfiguration
+                    {
+                        Ssid = formattedSsid,
+                        PreSharedKey = formattedPassword
+                    };
+                    this.wifiManager.AddNetwork(wifiConfig);
 
-            var network = this.wifiManager.ConfiguredNetworks
-                 .FirstOrDefault(n => n.Ssid == ssid);
+                    var dis = this.wifiManager.Disconnect();
+                    var network = this.wifiManager.ConfiguredNetworks.FirstOrDefault(n => n.Ssid.Contains(formattedSsid));
+                    var ena = this.wifiManager.EnableNetwork(network.NetworkId, true);
+                    var req = this.wifiManager.Reconnect();
 
-            if (network == null)
+                    var message = "api<29, connecting to " + formattedSsid + " from " + oldSsid + ", dis = " + dis + " ena = " + ena + " req = " + req;
+                    Android.Util.Log.Debug("TEST", message);
+                    return true;
+                }
+                else
+                {
+                    var specifier = new WifiNetworkSpecifier.Builder()
+                         .SetSsid(ssid)
+                         .SetWpa2Passphrase(password)
+                         .Build();
+
+                    var request = new NetworkRequest.Builder()
+                        .AddTransportType(TransportType.Wifi)
+                        .SetNetworkSpecifier(specifier)
+                        .Build();
+
+                    var tcs = new TaskCompletionSource<bool>();
+                    var networkCallback = new NetworkCallback
+                    {
+                        NetworkAvailable = network =>
+                        {
+                            tcs.TrySetResult(true);
+                        },
+                        NetworkUnavailable = () =>
+                        {
+                            tcs.TrySetResult(false);
+                        }
+                    };
+
+                    this.connectivityManager.RequestNetwork(request, networkCallback);
+
+                    var success = await tcs.Task;
+                    if (success)
+                    {
+                        this.networkCallbacks.AddOrUpdate(ssid, addValue: networkCallback, updateValueFactory: (k, o) => networkCallback);
+                    }
+
+                    return success;
+                }
+            }
+            catch (Exception ex)
             {
-                Console.WriteLine($"Cannot connect to network: {ssid}");
-                return;
+                this.networkCallbacks.Remove(ssid, out _);
+
+                this.logger.LogError(ex, $"ConnectToWifi with ssid={ssid} failed with exception");
+                return false;
+            }
+        }
+
+        public bool DisconnectWifi(string ssid)
+        {
+            this.logger.LogDebug($"DisconnectWifi: ssid={ssid}");
+
+            try
+            {
+                if (Android.OS.Build.VERSION.SdkInt < Android.OS.BuildVersionCodes.Q)
+                {
+                    throw new NotImplementedException();
+
+                    //var oldSsid = "empty";
+                    //var oldBsid = "empty";
+                    //try
+                    //{
+                    //    oldSsid = this.wifiManager.ConnectionInfo.SSID.Replace("\"", "");
+                    //    oldBsid = this.wifiManager.ConnectionInfo.BSSID.Replace("\"", "");
+                    //}
+                    //catch { }
+
+                    //var formattedSsid = $"\"{ssid}\"";
+                    //var wifiConfig = new WifiConfiguration
+                    //{
+                    //    Ssid = formattedSsid,
+                    //};
+
+                    //var dis = this.wifiManager.Disconnect();
+                    //var network = this.wifiManager.ConfiguredNetworks.FirstOrDefault(n => n.Ssid.Contains(formattedSsid));
+                    //var ena = this.wifiManager.EnableNetwork(network.NetworkId, true);
+                    //var req = this.wifiManager.Reconnect();
+
+                    //var message = "api<29, connecting to " + formattedSsid + " from " + oldSsid + ", dis = " + dis + " ena = " + ena + " req = " + req;
+                    //Android.Util.Log.Debug("TEST", message);
+                    //return true;
+                }
+                else
+                {
+                    if (this.networkCallbacks.Remove(ssid, out var networkCallback))
+                    {
+                        this.connectivityManager.UnregisterNetworkCallback(networkCallback);
+                        return true;
+                    }
+                    else
+                    {
+                        throw new InvalidOperationException(
+                            $"{nameof(DisconnectWifi)} failed to disconnect wifi '{ssid}' " +
+                            $"because it was not connected using method {nameof(ConnectToWifi)}");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                this.logger.LogError(ex, $"DisconnectWifi with ssid={ssid} failed with exception");
+                return false;
+            }
+        }
+
+        public string TestConnection()
+        {
+            try
+            {
+                if (Android.OS.Build.VERSION.SdkInt < Android.OS.BuildVersionCodes.Q)
+                {
+                    var ssid = this.wifiManager.ConnectionInfo.SSID.Replace("\"", "");
+                    Android.Util.Log.Debug("TEST", "connected to " + ssid);
+                }
+                else
+                {
+
+                }
+                return "";
+            }
+            catch (Exception ex)
+            {
+                var _Status = "Test WiFi error, ex=" + ex.Message;
+                Android.Util.Log.Error("TEST", _Status);
+                return _Status;
+            }
+        }
+
+        private class NetworkCallback : ConnectivityManager.NetworkCallback
+        {
+            private bool networkAvailable = false;
+
+            public Action<Network> NetworkAvailable { get; set; }
+
+            public Action NetworkUnavailable { get; set; }
+
+            public override void OnAvailable(Network network)
+            {
+                base.OnAvailable(network);
+                this.networkAvailable = true;
+                this.NetworkAvailable?.Invoke(network);
             }
 
-            this.wifiManager.Disconnect();
-
-            var result = this.wifiManager.EnableNetwork(network.NetworkId, true);
-        }
-
-        public void Disconnect(string ssid)
-        {
-            var network = this.wifiManager.ConfiguredNetworks
-                 .FirstOrDefault(n => n.Ssid == ssid);
-
-            if (network != null)
+            public override void OnUnavailable()
             {
-                this.wifiManager.RemoveNetwork(network.NetworkId);
+                base.OnUnavailable();
+                this.networkAvailable = false;
+                this.NetworkUnavailable?.Invoke();
             }
         }
     }

@@ -7,22 +7,27 @@ public class MainPageViewModel : BindableBase
     private readonly IWifiConnector wifiConnector;
     private readonly ILogger logger;
     private readonly INavigationService navigationService;
+    private readonly IPageDialogService dialogService;
     private readonly IConnectivity connectivity;
     private string text = "Click me";
+    private string ssid;
+    private string psk;
 
     public MainPageViewModel(
         ILogger<MainPageViewModel> logger,
         INavigationService navigationService,
+        IPageDialogService dialogService,
         IConnectivity connectivity,
         IWifiConnector wifiConnector)
     {
-        //this.screenReader = screenReader;
-        //this.bluetoothService = bluetoothService;
-        this.CountCommand = new DelegateCommand(this.OnCountCommandExecuted);
         this.logger = logger;
         this.navigationService = navigationService;
+        this.dialogService = dialogService;
         this.connectivity = connectivity;
         this.wifiConnector = wifiConnector;
+
+        this.ConnectToWifiCommand = new DelegateCommand(async () => await this.ConnectToWifi());
+        this.DisconnectWifiCommand = new DelegateCommand(async () => await this.DisconnectWifi());
     }
 
     public string Title => "Main Page";
@@ -30,27 +35,73 @@ public class MainPageViewModel : BindableBase
     public string Text
     {
         get => this.text;
-        set => this.SetProperty(ref this.text, value);
+        private set => this.SetProperty(ref this.text, value);
     }
 
-    public DelegateCommand CountCommand { get; }
-
-    private async void OnCountCommandExecuted()
+    public string SSID
     {
-        this.logger.LogDebug("OnCountCommandExecuted");
+        get => this.ssid;
+        set => this.SetProperty(ref this.ssid, value);
+    }
+
+    public string PSK
+    {
+        get => this.psk;
+        set => this.SetProperty(ref this.psk, value);
+    }
+
+    public DelegateCommand ConnectToWifiCommand { get; }
+
+    public DelegateCommand DisconnectWifiCommand { get; }
+
+    private async Task ConnectToWifi()
+    {
+        this.logger.LogDebug("ConnectToWifi");
 
         try
         {
-            this.wifiConnector.ConnectToWifi("ssid", "password");
+            var success = await this.wifiConnector.ConnectToWifi(this.SSID, this.PSK);
+            if (success)
+            {
+                await this.dialogService.DisplayAlertAsync("Wifi", "Successfully connected", "OK");
+            }
+            else
+            {
+                await this.dialogService.DisplayAlertAsync("Wifi", "Failed to connect", "OK");
+            }
 
-            this.Text = string.Join(",", this.connectivity.ConnectionProfiles);
+            //this.Text = string.Join(",", this.connectivity.ConnectionProfiles);
             //Text = string.Join(",", this.connectivity.NetworkAccess);
 
-            await this.navigationService.NavigateAsync("HomePage");
+            //await this.navigationService.NavigateAsync("HomePage");
         }
         catch (Exception e)
         {
-            this.logger.LogError(e, "OnCountCommandExecuted failed with exception");
+            this.logger.LogError(e, "ConnectToWifi failed with exception");
+            await this.dialogService.DisplayAlertAsync("Wifi", "Failed with exception", "OK");
+        }
+    }
+
+    private async Task DisconnectWifi()
+    {
+        this.logger.LogDebug("DisconnectWifi");
+
+        try
+        {
+            var success = this.wifiConnector.DisconnectWifi(this.SSID);
+            if (success)
+            {
+                await this.dialogService.DisplayAlertAsync("Wifi", "Successfully disconnected", "OK");
+            }
+            else
+            {
+                await this.dialogService.DisplayAlertAsync("Wifi", "Failed to disconnect", "OK");
+            }
+        }
+        catch (Exception e)
+        {
+            this.logger.LogError(e, "DisconnectWifi failed with exception");
+            await this.dialogService.DisplayAlertAsync("Wifi", "Failed with exception", "OK");
         }
     }
 }
