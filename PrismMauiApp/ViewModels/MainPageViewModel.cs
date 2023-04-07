@@ -1,30 +1,34 @@
 ﻿using Microsoft.Extensions.Logging;
 using PrismMauiApp.Services;
+using PrismMauiApp.Services.Login;
 
 namespace PrismMauiApp.ViewModels;
 public class MainPageViewModel : BindableBase
 {
     private readonly IWifiConnector wifiConnector;
+    private readonly IIdentityService identityService;
     private readonly ILogger logger;
     private readonly INavigationService navigationService;
     private readonly IPageDialogService dialogService;
     private readonly IConnectivity connectivity;
     private string text = "Click me";
-    private string ssid;
-    private string psk;
+    private string ssid = "PiWeatherDisplay_3B05CA";
+    private string psk = "T8cvDH11";
 
     public MainPageViewModel(
         ILogger<MainPageViewModel> logger,
         INavigationService navigationService,
         IPageDialogService dialogService,
         IConnectivity connectivity,
-        IWifiConnector wifiConnector)
+        IWifiConnector wifiConnector,
+        IIdentityService identityService)
     {
         this.logger = logger;
         this.navigationService = navigationService;
         this.dialogService = dialogService;
         this.connectivity = connectivity;
         this.wifiConnector = wifiConnector;
+        this.identityService = identityService;
 
         this.ConnectToWifiCommand = new DelegateCommand(async () => await this.ConnectToWifi());
         this.DisconnectWifiCommand = new DelegateCommand(async () => await this.DisconnectWifi());
@@ -63,11 +67,13 @@ public class MainPageViewModel : BindableBase
             var success = await this.wifiConnector.ConnectToWifi(this.SSID, this.PSK);
             if (success)
             {
+                var token = await this.identityService.LoginAsync("pi", "raspberry");
+
                 await this.dialogService.DisplayAlertAsync("Wifi", "Successfully connected", "OK");
             }
             else
             {
-                await this.dialogService.DisplayAlertAsync("Wifi", "Failed to connect", "OK");
+                await this.dialogService.DisplayAlertAsync("Wifi", "Not connected", "OK");
             }
 
             //this.Text = string.Join(",", this.connectivity.ConnectionProfiles);

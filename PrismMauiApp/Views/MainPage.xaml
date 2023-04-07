@@ -35,7 +35,9 @@
                 SemanticProperties.HeadingLevel="Level2"
                 Text="Welcome to Prism for .NET MAUI" />
 
-            <Entry Placeholder="SSID" Text="{Binding SSID}" />
+            <Entry
+                Placeholder="SSID"
+                Text="{Binding SSID}" />
             <Entry
                 IsPassword="True"
                 Placeholder="Password"

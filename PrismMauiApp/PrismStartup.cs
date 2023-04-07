@@ -1,5 +1,6 @@
 ﻿using PrismMauiApp.Platforms.Services;
 using PrismMauiApp.Services;
+using PrismMauiApp.Services.Login;
 using PrismMauiApp.ViewModels;
 using PrismMauiApp.Views;
 
@@ -35,5 +36,6 @@ internal static class PrismStartup
         containerRegistry.RegisterInstance(() => SemanticScreenReader.Default);
         containerRegistry.RegisterInstance(() => Connectivity.Current);
         containerRegistry.RegisterSingleton<IWifiConnector, WifiConnector>();
+        containerRegistry.RegisterSingleton<IIdentityService, IdentityService>();
     }
 }

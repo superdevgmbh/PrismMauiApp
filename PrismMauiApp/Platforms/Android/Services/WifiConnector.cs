@@ -67,11 +67,20 @@ namespace PrismMauiApp.Platforms.Services
 
                     var request = new NetworkRequest.Builder()
                         .AddTransportType(TransportType.Wifi)
+                        .RemoveCapability(NetCapability.Internet)
+                        //.AddCapability(NetCapability.Trusted)
+                        //.AddCapability(NetCapability.NotRestricted)
+                        //.RemoveCapability(NetCapability.NotMetered)
+                        //.RemoveCapability(NetCapability.NotVpn)
+                        //.RemoveCapability(NetCapability.Foreground)
+                        //.RemoveCapability(NetCapability.NotCongested)
+                        //.RemoveCapability(NetCapability.NotSuspended)
+                        //.RemoveCapability(NetCapability.NotRoaming)
                         .SetNetworkSpecifier(specifier)
                         .Build();
 
                     var tcs = new TaskCompletionSource<bool>();
-                    var networkCallback = new NetworkCallback
+                    var networkCallback = new NetworkCallback(this.connectivityManager)
                     {
                         NetworkAvailable = network =>
                         {
@@ -184,7 +193,12 @@ namespace PrismMauiApp.Platforms.Services
 
         private class NetworkCallback : ConnectivityManager.NetworkCallback
         {
-            private bool networkAvailable = false;
+            private readonly ConnectivityManager connectivityManager;
+
+            public NetworkCallback(ConnectivityManager connectivityManager)
+            {
+                this.connectivityManager = connectivityManager;
+            }
 
             public Action<Network> NetworkAvailable { get; set; }
 
@@ -193,15 +207,20 @@ namespace PrismMauiApp.Platforms.Services
             public override void OnAvailable(Network network)
             {
                 base.OnAvailable(network);
-                this.networkAvailable = true;
+                this.connectivityManager.BindProcessToNetwork(network);
                 this.NetworkAvailable?.Invoke(network);
             }
 
             public override void OnUnavailable()
             {
                 base.OnUnavailable();
-                this.networkAvailable = false;
                 this.NetworkUnavailable?.Invoke();
+            }
+
+            public override void OnLost(Network network)
+            {
+                base.OnLost(network);
+                this.connectivityManager.BindProcessToNetwork(null);
             }
         }
     }
