@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace PrismMauiApp.Services.Login
+namespace PrismMauiApp.Model
 {
     public class LoginDto
     {
