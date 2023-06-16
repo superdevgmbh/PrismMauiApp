@@ -3,56 +3,76 @@
     x:Class="PrismMauiApp.Views.MainPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:PrismMauiApp.Controls"
+    xmlns:prism="http://prismlibrary.com"
     xmlns:viewmodels="clr-namespace:PrismMauiApp.ViewModels"
     Title="{Binding Title}"
-    x:DataType="viewmodels:MainPageViewModel"
+    prism:ViewModelLocator.AutowireViewModel="Automatic"
+    x:DataType="viewmodels:MainViewModel"
     NavigationPage.HasBackButton="True"
-    NavigationPage.HasNavigationBar="True"
-    NavigationPage.TitleIconImageSource="prism.png">
+    NavigationPage.HasNavigationBar="True">
 
-    <ScrollView>
-        <VerticalStackLayout
-            Padding="30,0"
-            Spacing="25"
-            VerticalOptions="Center">
+    <!--<ContentPage.ToolbarItems>
+        <ToolbarItem
+            Command="{Binding AddNewDeviceCommand}"
+            Text="AddNewDevice" />
+    </ContentPage.ToolbarItems>-->
 
-            <Image
-                HeightRequest="150"
-                HorizontalOptions="Center"
-                SemanticProperties.Description="Cute dot net bot waving hi to you!"
-                Source="prism.png" />
+    <Grid>
+        <ScrollView>
+            <VerticalStackLayout Padding="30">
 
-            <Label
-                FontSize="32"
-                HorizontalOptions="Center"
-                SemanticProperties.HeadingLevel="Level1"
-                Text="Hello, World!" />
+                <VerticalStackLayout
+                    BackgroundColor="Magenta"
+                    IsVisible="{Binding HasAnyDisplayConfigurations}"
+                    Spacing="25">
+                    <Label Text="{Binding DisplayConfiguration.DisplayName}" />
 
-            <Label
-                FontSize="18"
-                HorizontalOptions="Center"
-                SemanticProperties.Description="Welcome to Prism for dot net Multi platform App U I"
-                SemanticProperties.HeadingLevel="Level2"
-                Text="Welcome to Prism for .NET MAUI" />
+                    <Button
+                        Command="{Binding DisconnectWifiCommand}"
+                        Text="Disconnect"
+                        HorizontalOptions="Center" />
+                </VerticalStackLayout>
 
-            <Entry
-                Placeholder="SSID"
-                Text="{Binding SSID}" />
-            <Entry
-                IsPassword="True"
-                Placeholder="Password"
-                Text="{Binding PSK}" />
-            <Button
-                Command="{Binding ConnectToWifiCommand}"
-                HorizontalOptions="Center"
-                Text="Connect to Wifi" />
+                <VerticalStackLayout
+                    IsVisible="{Binding HasAnyDisplayConfigurations, Converter={StaticResource BoolInverter}}"
+                    Spacing="25"
+                    VerticalOptions="Center">
 
-            <Button
-                Command="{Binding DisconnectWifiCommand}"
-                HorizontalOptions="Center"
-                Text="Disconnect" />
+                    <Image
+                        HeightRequest="150"
+                        SemanticProperties.Description="Cute dot net bot waving hi to you!"
+                        Source="prism"
+                        HorizontalOptions="Center" />
 
-        </VerticalStackLayout>
-    </ScrollView>
+                    <Label
+                        FontSize="32"
+                        SemanticProperties.HeadingLevel="Level1"
+                        Text="Hello, World!"
+                        HorizontalOptions="Center" />
 
+                    <Label
+                        FontSize="18"
+                        SemanticProperties.Description="Welcome to Prism for dot net Multi platform App U I"
+                        SemanticProperties.HeadingLevel="Level2"
+                        Text="Welcome to Prism for .NET MAUI"
+                        HorizontalOptions="Center" />
+
+                    <Entry
+                        Placeholder="SSID"
+                        Text="{Binding SSID}" />
+                    <Entry
+                        IsPassword="True"
+                        Placeholder="Password"
+                        Text="{Binding PSK}" />
+                    <Button
+                        Command="{Binding ConnectToDisplayCommand}"
+                        Text="Connect" />
+
+                </VerticalStackLayout>
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <controls:PageActivityIndicator IsVisible="{Binding IsBusy}" />
+    </Grid>
 </ContentPage>

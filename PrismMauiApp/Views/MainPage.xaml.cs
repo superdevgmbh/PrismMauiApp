@@ -1,10 +1,18 @@
-﻿namespace PrismMauiApp.Views;
+﻿using PrismMauiApp.ViewModels;
+
+namespace PrismMauiApp.Views;
 
 public partial class MainPage : ContentPage
 {
     public MainPage()
     {
-        InitializeComponent();
+        this.InitializeComponent();
     }
+
+    //protected override void OnBindingContextChanged()
+    //{
+    //    base.OnBindingContextChanged();
+    //    var vm = this.BindingContext as MainViewModel;
+    //}
 }
 

@@ -1,41 +1,54 @@
-﻿using PrismMauiApp.Platforms.Services;
-using PrismMauiApp.Services;
-using PrismMauiApp.Services.Login;
-using PrismMauiApp.ViewModels;
-using PrismMauiApp.Views;
+﻿//using System.Reflection;
+//using Prism.Ioc;
+//using PrismMauiApp.Platforms.Services;
+//using PrismMauiApp.Services;
+//using PrismMauiApp.Services.Login;
+//using PrismMauiApp.ViewModels;
+//using PrismMauiApp.Views;
+//using PrismMauiApp.Extensions;
+//using System.Globalization;
+//using PrismMauiApp.ViewModels.Devices;
+//using PrismMauiApp.Services.Http;
+//using PrismMauiApp.Platforms;
 
-namespace PrismMauiApp;
+//namespace PrismMauiApp;
 
-internal static class PrismStartup
-{
-    public static void Configure(PrismAppBuilder builder)
-    {
-        builder.RegisterTypes(RegisterTypes);
-        builder.OnInitialized((IContainerProvider obj) =>
-        {
+//internal static class PrismStartup
+//{
+//    public static void Configure(PrismAppBuilder builder)
+//    {
+//        ViewModelLocationProvider.SetDefaultViewTypeToViewModelTypeResolver((viewType) =>
+//        {
+//            var viewName = viewType.FullName.ReplaceLastOccurrence(".Views.", ".ViewModels.");
+//            var viewAssemblyName = viewType.GetTypeInfo().Assembly.FullName;
 
-        });
-        builder.OnAppStart(async navigationService =>
-        {
-            var result = await navigationService.NavigateAsync("/TabbedMainPage?selectedTab=ViewA");
-            if (!result.Success)
-            {
-                System.Diagnostics.Debugger.Break();
-            }
-        });
-    }
+//            var viewModelName = viewName.ReplaceLastOccurrence("Page", viewName.EndsWith("View") ? "Model" : "ViewModel");
+//            var viewModelFullName = string.Format(CultureInfo.InvariantCulture, "{0}, {1}", viewModelName, viewAssemblyName);
+//            var type = Type.GetType(viewModelFullName);
+//            return type;
+//        });
 
-    private static void RegisterTypes(IContainerRegistry containerRegistry)
-    {
-        containerRegistry.RegisterForNavigation<NavigationPage>();
-        containerRegistry.RegisterForNavigation<TabbedMainPage, TabbedMainPageViewModel>();
-        containerRegistry.RegisterForNavigation<HomePage, HomePageViewModel>();
-        containerRegistry.RegisterForNavigation<MainPage, MainPageViewModel>();
-        containerRegistry.RegisterForNavigation<ViewA>(App.Pages.ViewA);
+//        builder.RegisterTypes(PlatformInitializer.RegisterTypes);
+//        //builder.RegisterTypes(RegisterTypes);
+//        builder.OnInitialized((IContainerProvider c) =>
+//        {
 
-        containerRegistry.RegisterInstance(() => SemanticScreenReader.Default);
-        containerRegistry.RegisterInstance(() => Connectivity.Current);
-        containerRegistry.RegisterSingleton<IWifiConnector, WifiConnector>();
-        containerRegistry.RegisterSingleton<IIdentityService, IdentityService>();
-    }
-}
+//        });
+//        builder.OnAppStart(async (c, navigationService) =>
+//        {
+//            //var result = await navigationService.CreateBuilder()
+//            //.AddTabbedSegment(c => 
+//            //    c.CreateTab(App.Pages.MainPage)
+//            //     .CreateTab(App.Pages.AboutPage)
+//            //     .SelectedTab(App.Pages.AboutPage))
+//            //.NavigateAsync();
+//            var result = await navigationService.NavigateAsync($"/{App.Pages.TabbedMainPage}?selectedTab={App.Pages.MainPage}");
+//            //var result = await navigationService.NavigateAsync($"/{App.Pages.TabbedMainPage}");
+//            if (!result.Success)
+//            {
+//                System.Diagnostics.Debugger.Break();
+//            }
+//        });
+//    }
+
+//}

@@ -4,6 +4,7 @@ using Android.Net;
 using Android.Net.Wifi;
 using Microsoft.Extensions.Logging;
 using PrismMauiApp.Services;
+using static Android.Net.ConnectivityManager;
 
 
 namespace PrismMauiApp.Platforms.Services
@@ -62,20 +63,13 @@ namespace PrismMauiApp.Platforms.Services
                 {
                     var specifier = new WifiNetworkSpecifier.Builder()
                          .SetSsid(ssid)
+                         .SetIsHiddenSsid(true)
                          .SetWpa2Passphrase(password)
                          .Build();
 
                     var request = new NetworkRequest.Builder()
                         .AddTransportType(TransportType.Wifi)
                         .RemoveCapability(NetCapability.Internet)
-                        //.AddCapability(NetCapability.Trusted)
-                        //.AddCapability(NetCapability.NotRestricted)
-                        //.RemoveCapability(NetCapability.NotMetered)
-                        //.RemoveCapability(NetCapability.NotVpn)
-                        //.RemoveCapability(NetCapability.Foreground)
-                        //.RemoveCapability(NetCapability.NotCongested)
-                        //.RemoveCapability(NetCapability.NotSuspended)
-                        //.RemoveCapability(NetCapability.NotRoaming)
                         .SetNetworkSpecifier(specifier)
                         .Build();
 
@@ -92,12 +86,27 @@ namespace PrismMauiApp.Platforms.Services
                         }
                     };
 
-                    this.connectivityManager.RequestNetwork(request, networkCallback);
+                    var success = false;
+                    var attempts = 10;
+                    var timeoutMs = 3000;
 
-                    var success = await tcs.Task;
-                    if (success)
+                    while (attempts-- > 0)
                     {
-                        this.networkCallbacks.AddOrUpdate(ssid, addValue: networkCallback, updateValueFactory: (k, o) => networkCallback);
+                        this.connectivityManager.RequestNetwork(request, networkCallback, timeoutMs);
+
+                        success = await tcs.Task;
+                        if (success)
+                        {
+                            this.networkCallbacks.AddOrUpdate(ssid, addValue: networkCallback, updateValueFactory: (k, o) => networkCallback);
+                            break;
+                        }
+
+                        timeoutMs += 1000;
+                    }
+
+                    if (!success)
+                    {
+                        this.DisconnectWifi(ssid);
                     }
 
                     return success;
@@ -151,14 +160,15 @@ namespace PrismMauiApp.Platforms.Services
                     if (this.networkCallbacks.Remove(ssid, out var networkCallback))
                     {
                         this.connectivityManager.UnregisterNetworkCallback(networkCallback);
-                        return true;
                     }
                     else
                     {
-                        throw new InvalidOperationException(
+                        this.logger.LogInformation(
                             $"{nameof(DisconnectWifi)} failed to disconnect wifi '{ssid}' " +
                             $"because it was not connected using method {nameof(ConnectToWifi)}");
                     }
+
+                    return true;
                 }
             }
             catch (Exception ex)
@@ -221,6 +231,7 @@ namespace PrismMauiApp.Platforms.Services
             {
                 base.OnLost(network);
                 this.connectivityManager.BindProcessToNetwork(null);
+                //this.connectivityManager.UnregisterNetworkCallback(this);
             }
         }
     }

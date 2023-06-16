@@ -42,7 +42,7 @@ namespace PrismMauiApp.Services.Logging
             consoleTarget.Layout = layout;
             config.AddTarget("console", consoleTarget);
 
-            var consoleRule = new LoggingRule("*", LogLevel.Trace, consoleTarget);
+            var consoleRule = new LoggingRule("*", NLog.LogLevel.Trace, consoleTarget);
             config.LoggingRules.Add(consoleRule);
 
             // File Target
@@ -56,7 +56,7 @@ namespace PrismMauiApp.Services.Logging
             fileTarget.KeepFileOpen = false;
             config.AddTarget("file", fileTarget);
 
-            var fileRule = new LoggingRule("*", LogLevel.Trace, fileTarget);
+            var fileRule = new LoggingRule("*", NLog.LogLevel.Trace, fileTarget);
             config.LoggingRules.Add(fileRule);
 
             LogManager.Configuration = config;

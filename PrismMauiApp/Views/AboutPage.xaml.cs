@@ -1,8 +1,8 @@
 namespace PrismMauiApp.Views;
 
-public partial class ViewA : ContentPage
+public partial class AboutPage : ContentPage
 {
-    public ViewA()
+    public AboutPage()
     {
         this.InitializeComponent();
     }

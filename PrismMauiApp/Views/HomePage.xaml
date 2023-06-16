@@ -8,8 +8,8 @@
     NavigationPage.TitleIconImageSource="prism.png">
     <VerticalStackLayout>
         <Label
-            HorizontalOptions="Center"
             Text="lalala"
+            HorizontalOptions="Center"
             VerticalOptions="Center" />
     </VerticalStackLayout>
 </ContentPage>

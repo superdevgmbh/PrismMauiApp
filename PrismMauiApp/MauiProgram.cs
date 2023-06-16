@@ -1,9 +1,14 @@
-﻿using Microsoft.Extensions.Logging;
-using Microsoft.Maui.Controls.Compatibility.Hosting;
+﻿using System.Diagnostics;
+using System.Globalization;
+using System.Reflection;
+using Microsoft.Extensions.Caching.InMemory;
 using NLog.Extensions.Logging;
+using PrismMauiApp.Extensions;
+using PrismMauiApp.Platforms;
 using PrismMauiApp.Platforms.Services;
-using PrismMauiApp.Services;
-using PrismMauiApp.Services.Logging;
+using PrismMauiApp.ViewModels;
+using PrismMauiApp.ViewModels.Devices;
+using PrismMauiApp.Views;
 
 namespace PrismMauiApp;
 
@@ -11,31 +16,73 @@ public static class MauiProgram
 {
     public static MauiApp CreateMauiApp()
     {
-        var builder = MauiApp.CreateBuilder();
-        builder
-            .UseMauiApp<App>()
-            .UseMauiCompatibility()
-            .ConfigureMauiHandlers(handlers =>
-            {
-                //Xamarin.Forms Renderers
 
-                //#if IOS
-                //                handlers.AddCompatibilityRenderer(typeof(Page1ModalPage), typeof(ModalPageCustomRenderer));
-                //                handlers.AddCompatibilityRenderer(typeof(TabbedPageRuntimeModal), typeof(ModalPageCustomRenderer));
-                //                handlers.AddCompatibilityRenderer(typeof(TabModalPage), typeof(ModalPageCustomRenderer));
-                //#endif
+        ViewModelLocationProvider.SetDefaultViewTypeToViewModelTypeResolver((viewType) =>
+        {
+            var viewName = viewType.FullName.ReplaceLastOccurrence(".Views.", ".ViewModels.");
+            var viewAssemblyName = viewType.GetTypeInfo().Assembly.FullName;
+
+            var viewModelName = viewName.ReplaceLastOccurrence("Page", viewName.EndsWith("View") ? "Model" : "ViewModel");
+            var viewModelFullName = string.Format(CultureInfo.InvariantCulture, "{0}, {1}", viewModelName, viewAssemblyName);
+            var type = Type.GetType(viewModelFullName);
+            return type;
+        });
+
+        var builder = MauiApp.CreateBuilder()
+            .UseMauiApp<App>()
+            //            .UseMauiCompatibility()
+            //            .ConfigureMauiHandlers(handlers =>
+            //            {
+            //                //Xamarin.Forms Renderers
+
+            //                //#if IOS
+            //                //                handlers.AddCompatibilityRenderer(typeof(Page1ModalPage), typeof(ModalPageCustomRenderer));
+            //                //                handlers.AddCompatibilityRenderer(typeof(TabbedPageRuntimeModal), typeof(ModalPageCustomRenderer));
+            //                //                handlers.AddCompatibilityRenderer(typeof(TabModalPage), typeof(ModalPageCustomRenderer));
+            //                //#endif
+            //            })
+            //            .ConfigureLifecycleEvents(builder =>
+            //            {
+            //#if ANDROID
+            //                builder.AddAndroid(android =>
+            //                {
+            //                    android.OnBackPressed(activity => true);
+            //                });
+            //#endif
+            //            })
+            //.RegisterAppServices()
+            //.RegisterViews()
+            .UsePrism(prism =>
+            {
+                prism
+                .RegisterTypes(RegisterTypes)
+                .RegisterTypes(PlatformInitializer.RegisterTypes)
+                .OnInitialized((IContainerProvider c) =>
+                {
+
+                })
+                .OnAppStart(async (c, navigationService) =>
+                {
+                    //var result = await navigationService.CreateBuilder()
+                    //.AddTabbedSegment(c => 
+                    //    c.CreateTab(App.Pages.MainPage)
+                    //     .CreateTab(App.Pages.AboutPage)
+                    //     .SelectedTab(App.Pages.AboutPage))
+                    //.NavigateAsync();
+                    var result = await navigationService.NavigateAsync($"/{App.Pages.TabbedMainPage}?selectedTab={App.Pages.MainPage}");
+                    //var result = await navigationService.NavigateAsync($"/{App.Pages.TabbedMainPage}");
+                    if (!result.Success)
+                    {
+                        Debug.WriteLine($"{result}");
+                        Debugger.Break();
+                    }
+                });
             })
-            .UsePrism(PrismStartup.Configure)
             .ConfigureFonts(fonts =>
             {
                 fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                 fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
             });
-
-        var logFileReader = new NLogFileReader(NLogLoggerConfiguration.LogFilePath);
-        builder.Services.AddSingleton<ILogFileReader>(logFileReader);
-        builder.Services.AddSingleton<IConnectivity>(Connectivity.Current);
-        builder.Services.AddSingleton<IWifiConnector, WifiConnector>();
 
         builder.Services.AddLogging(configure =>
         {
@@ -43,6 +90,61 @@ public static class MauiProgram
             configure.AddNLog();
         });
 
-        return builder.Build();
+        var app = builder.Build();
+
+        //CommunityToolkit.Mvvm.DependencyInjection.Ioc.Default.ConfigureServices(app.Services);
+
+        return app;
     }
+
+
+    private static void RegisterTypes(IContainerRegistry containerRegistry)
+    {
+        var logFileReader = new NLogFileReader(NLogLoggerConfiguration.LogFilePath);
+        containerRegistry.RegisterInstance<ILogFileReader>(logFileReader);
+
+        containerRegistry.RegisterForNavigation<NavigationPage>();
+        containerRegistry.RegisterForNavigation<TabbedMainPage, TabbedMainViewModel>();
+        containerRegistry.RegisterForNavigation<HomePage, HomeViewModel>(App.Pages.HomePage);
+        containerRegistry.RegisterForNavigation<MainPage, MainViewModel>(App.Pages.MainPage);
+        containerRegistry.RegisterForNavigation<AddNewDevicePage, AddNewDeviceViewModel>(App.Pages.AddNewDevicePage);
+        containerRegistry.RegisterForNavigation<ConnectToDevicePage, ConnectToDeviceViewModel>(App.Pages.ConnectToDevicePage);
+        containerRegistry.RegisterForNavigation<AboutPage, AboutViewModel>(App.Pages.AboutPage);
+
+        //containerRegistry.RegisterInstance(() => Connectivity.Current);
+        containerRegistry.RegisterInstance(Connectivity.Current);
+        containerRegistry.RegisterSingleton<IWifiConnector, WifiConnector>();
+        containerRegistry.RegisterSingleton<IIdentityService, IdentityService>();
+        containerRegistry.RegisterSingleton<INetworkService, NetworkService>();
+        containerRegistry.Register<ISecureStorage>(() => SecureStorage.Default);
+        containerRegistry.RegisterSingleton<IDisplayRepository, DisplayRepository>();
+
+        containerRegistry.RegisterSingleton<IMemoryCache, MemoryCache>();
+        containerRegistry.RegisterSingleton<IApiService, ApiService>();
+        containerRegistry.RegisterSingleton<IApiServiceConfiguration>(() =>
+        {
+            return new DefaultApiServiceConfiguration
+            {
+
+            };
+        });
+
+    }
+
+    //static MauiAppBuilder RegisterAppServices(this MauiAppBuilder builder)
+    //{
+    //    // register your own services here!
+    //    return builder;
+    //}
+
+    //static MauiAppBuilder RegisterViews(this MauiAppBuilder builder)
+    //{
+    //    var serviceCollection = builder.Services;
+    //    serviceCollection.RegisterForNavigation<NavigationPage>();
+    //    serviceCollection.RegisterForNavigation<TabbedMainPage, TabbedMainViewModel>();
+    //    serviceCollection.RegisterForNavigation<HomePage, HomeViewModel>(App.Pages.HomePage);
+    //    serviceCollection.RegisterForNavigation<MainPage, MainViewModel>(App.Pages.MainPage);
+    //    return builder;
+    //}
+
 }

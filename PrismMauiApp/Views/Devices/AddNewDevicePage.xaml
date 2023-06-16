@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="PrismMauiApp.Views.AddNewDevicePage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:PrismMauiApp.Controls"
+    xmlns:deviesViewModels="clr-namespace:PrismMauiApp.ViewModels.Devices"
+    xmlns:deviesViews="clr-namespace:PrismMauiApp.Views.Devices"
+    Title="AddNewDevicePage"
+    x:DataType="deviesViewModels:AddNewDeviceViewModel">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem
+            Command="{Binding CloseCommand}"
+            IconImageSource="ic_close" />
+    </ContentPage.ToolbarItems>
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <DataTemplate x:Key="DeviceItemTemplate">
+                <deviesViews:DeviceItemTemplate />
+            </DataTemplate>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Grid>
+        <ScrollView>
+            <Grid Padding="20">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <Grid Grid.Row="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <VerticalStackLayout
+                        Grid.Row="0"
+                        IsVisible="{Binding IsScanning, Converter={StaticResource BoolInverter}}"
+                        Spacing="20">
+                        <VerticalStackLayout
+                            BindableLayout.ItemTemplate="{StaticResource DeviceItemTemplate}"
+                            BindableLayout.ItemsSource="{Binding Devices}" />
+
+                        <Button
+                            Command="{Binding ScanCommand}"
+                            Text="Start scan" />
+                    </VerticalStackLayout>
+
+
+                    <VerticalStackLayout
+                        Grid.Row="0"
+                        IsVisible="{Binding IsScanning}"
+                        Spacing="20">
+                        <ActivityIndicator
+                            IsRunning="{Binding IsScanning}"
+                            HorizontalOptions="Fill"
+                            VerticalOptions="Fill" />
+                        <Label
+                            IsVisible="{Binding IsBusy}"
+                            Text="Scanning network..." />
+                        <Button
+                            Command="{Binding CancelScanCommand}"
+                            Text="Cancel" />
+                    </VerticalStackLayout>
+
+                </Grid>
+
+                <Button
+                    Grid.Row="1"
+                    Command="{Binding ContinueCommand}"
+                    IsEnabled="{Binding CanContinue}"
+                    Text="Continue" />
+            </Grid>
+        </ScrollView>
+
+        <controls:PageActivityIndicator IsVisible="{Binding IsBusy}" />
+    </Grid>
+</ContentPage>

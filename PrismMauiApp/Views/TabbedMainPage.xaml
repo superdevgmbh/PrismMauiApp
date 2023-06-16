@@ -5,40 +5,35 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:android="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.AndroidSpecific;assembly=Microsoft.Maui.Controls"
     xmlns:ios="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;assembly=Microsoft.Maui.Controls"
+    xmlns:prism="http://prismlibrary.com"
+    xmlns:viewmodels="clr-namespace:PrismMauiApp.ViewModels"
     xmlns:views="clr-namespace:PrismMauiApp.Views"
     Title="TabbedMainPage"
     android:TabbedPage.IsSmoothScrollEnabled="False"
     android:TabbedPage.IsSwipePagingEnabled="False"
     android:TabbedPage.ToolbarPlacement="Bottom"
-    ios:TabbedPage.TranslucencyMode="Default">
+    ios:TabbedPage.TranslucencyMode="Default"
+    x:DataType="viewmodels:TabbedMainViewModel">
 
     <Page.ToolbarItems>
         <ToolbarItem
-            Command="{Binding AddCommand}"
-            Text="Add" />
+            Command="{Binding AddNewDeviceCommand}"
+            IconImageSource="ic_add" />
     </Page.ToolbarItems>
-    <NavigationPage Title="Main">
+
+    <NavigationPage
+        Title="Home"
+        IconImageSource="prism">
         <x:Arguments>
             <views:MainPage />
         </x:Arguments>
     </NavigationPage>
 
     <NavigationPage
-        Title="Home"
-        BackgroundColor="Magenta"
-        BarBackgroundColor="Yellow"
-        BarTextColor="Magenta"
-        IconImageSource="prism.png">
+        Title="About"
+        IconImageSource="prism">
         <x:Arguments>
-            <views:HomePage />
-        </x:Arguments>
-    </NavigationPage>
-
-    <NavigationPage
-        Title="A"
-        IconImageSource="prism.png">
-        <x:Arguments>
-            <views:ViewA />
+            <views:AboutPage />
         </x:Arguments>
     </NavigationPage>
 

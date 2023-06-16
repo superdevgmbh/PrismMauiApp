@@ -1,6 +1,8 @@
-﻿namespace PrismMauiApp
+﻿using Prism;
+
+namespace PrismMauiApp
 {
-    public partial class App : Application
+    public partial class App : PrismApplication
     {
         public App()
         {

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="PrismMauiApp.Views.ConnectToDevicePage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:deviesViewModels="clr-namespace:PrismMauiApp.ViewModels.Devices"
+    xmlns:deviesViews="clr-namespace:PrismMauiApp.Views.Devices"
+    Title="ConnectToDevicePage"
+    x:DataType="deviesViewModels:ConnectToDeviceViewModel">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem
+            Command="{Binding CancelCommand}"
+            IconImageSource="ic_close" />
+    </ContentPage.ToolbarItems>
+
+    <Grid>
+        <ScrollView>
+            <Grid Padding="20">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <Grid Grid.Row="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+
+                    <ActivityIndicator
+                        Grid.Row="0"
+                        IsRunning="{Binding IsBusy}"
+                        IsVisible="{Binding IsBusy}"
+                        HorizontalOptions="Fill"
+                        VerticalOptions="Fill" />
+
+                    <Label
+                        Grid.Row="0"
+                        IsVisible="{Binding IsBusy}"
+                        Text="Connecting to device..." />
+                </Grid>
+
+                <Button
+                    Grid.Row="1"
+                    Command="{Binding ContinueCommand}"
+                    IsEnabled="{Binding CanContinue}"
+                    Text="Continue" />
+            </Grid>
+        </ScrollView>
+    </Grid>
+
+</ContentPage>

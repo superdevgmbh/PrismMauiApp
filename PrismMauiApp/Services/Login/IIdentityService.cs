@@ -2,6 +2,6 @@
 {
     public interface IIdentityService
     {
-        Task<string> LoginAsync(string username, string password);
+        Task LoginAsync(string username, string password);
     }
 }
