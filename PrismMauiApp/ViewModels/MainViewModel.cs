@@ -61,19 +61,7 @@
             set => this.SetProperty(ref this.psk, value);
         }
 
-        public override async Task OnNavigatedToAsync(NavigationMode navigationMode, INavigationParameters parameters)
-        {
-            if (navigationMode == NavigationMode.New)
-            {
-                await this.InitAsync();
-            }
-        }
-
-        public void OnNavigatedFrom(INavigationParameters parameters)
-        {
-        }
-
-        private async Task InitAsync()
+        public override async Task InitializeAsync(INavigationParameters parameters)
         {
             this.IsBusy = true;
 
@@ -81,7 +69,7 @@
             {
                 this.logger.LogInformation("InitAsync");
 
-                await Task.Delay(2000);
+                //await Task.Delay(2000);
 
                 var displayConfigurations = await this.displayRepository.GetDisplayConfigurationsAsync();
                 if (displayConfigurations.Any())

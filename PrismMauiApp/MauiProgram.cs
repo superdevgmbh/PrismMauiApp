@@ -63,14 +63,7 @@ public static class MauiProgram
                 })
                 .OnAppStart(async (c, navigationService) =>
                 {
-                    //var result = await navigationService.CreateBuilder()
-                    //.AddTabbedSegment(c => 
-                    //    c.CreateTab(App.Pages.MainPage)
-                    //     .CreateTab(App.Pages.AboutPage)
-                    //     .SelectedTab(App.Pages.AboutPage))
-                    //.NavigateAsync();
-                    var result = await navigationService.NavigateAsync($"/{App.Pages.TabbedMainPage}?selectedTab={App.Pages.MainPage}");
-                    //var result = await navigationService.NavigateAsync($"/{App.Pages.TabbedMainPage}");
+                    var result = await navigationService.NavigateAsync($"/{App.Pages.AppStartPage}");
                     if (!result.Success)
                     {
                         Debug.WriteLine($"{result}");
@@ -104,6 +97,7 @@ public static class MauiProgram
         containerRegistry.RegisterInstance<ILogFileReader>(logFileReader);
 
         containerRegistry.RegisterForNavigation<NavigationPage>();
+        containerRegistry.RegisterForNavigation<AppStartPage, AppStartViewModel>(App.Pages.AppStartPage);
         containerRegistry.RegisterForNavigation<TabbedMainPage, TabbedMainViewModel>();
         containerRegistry.RegisterForNavigation<HomePage, HomeViewModel>(App.Pages.HomePage);
         containerRegistry.RegisterForNavigation<MainPage, MainViewModel>(App.Pages.MainPage);
@@ -125,7 +119,7 @@ public static class MauiProgram
         {
             return new DefaultApiServiceConfiguration
             {
-
+                Timeout = TimeSpan.FromSeconds(20),
             };
         });
 

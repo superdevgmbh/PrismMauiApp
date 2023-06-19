@@ -11,7 +11,7 @@ namespace PrismMauiApp.Services.Http
 
         public string ApiVersion { get; set; }
 
-        public TimeSpan Timeout { get; set; } = TimeSpan.FromSeconds(25);
+        public TimeSpan Timeout { get; set; }
 
         public bool IsDebug { get; set; }
 

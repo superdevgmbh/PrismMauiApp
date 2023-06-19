@@ -12,12 +12,6 @@
     NavigationPage.HasBackButton="True"
     NavigationPage.HasNavigationBar="True">
 
-    <!--<ContentPage.ToolbarItems>
-        <ToolbarItem
-            Command="{Binding AddNewDeviceCommand}"
-            Text="AddNewDevice" />
-    </ContentPage.ToolbarItems>-->
-
     <Grid>
         <ScrollView>
             <VerticalStackLayout Padding="30">

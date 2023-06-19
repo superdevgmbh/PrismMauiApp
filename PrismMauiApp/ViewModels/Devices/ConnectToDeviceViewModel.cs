@@ -31,25 +31,13 @@ namespace PrismMauiApp.ViewModels.Devices
             this.dialogService = dialogService;
         }
 
-        public void OnNavigatedTo(INavigationParameters parameters)
-        {
-            if (parameters.GetNavigationMode() == NavigationMode.New)
-            {
-                var navigationParameters = parameters.GetParameter<NavigationParameter>();
-                this.Init(navigationParameters.SSID);
-            }
-        }
-
-        public void OnNavigatedFrom(INavigationParameters parameters)
-        {
-        }
-
-        private void Init(string ssid)
+        public override void Initialize(INavigationParameters parameters)
         {
             this.IsBusy = true;
 
             try
             {
+                var navigationParameters = parameters.GetParameter<NavigationParameter>();
                 this.ConnectToDevice();
             }
             catch (Exception e)

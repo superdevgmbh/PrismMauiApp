@@ -4,6 +4,7 @@
     {
         public static class Pages
         {
+            public const string AppStartPage = nameof(PrismMauiApp.Views.AppStartPage);
             public const string HomePage = nameof(PrismMauiApp.Views.HomePage);
             public const string MainPage = nameof(PrismMauiApp.Views.MainPage);
             public const string NavigationPage = nameof(Microsoft.Maui.Controls.NavigationPage);

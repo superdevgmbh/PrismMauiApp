@@ -79,6 +79,9 @@
     <MauiXaml Update="Resources\Styles\Converters.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
+    <MauiXaml Update="Views\AppStartPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </MauiXaml>
     <MauiXaml Update="Views\Devices\ConnectToDevicePage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>

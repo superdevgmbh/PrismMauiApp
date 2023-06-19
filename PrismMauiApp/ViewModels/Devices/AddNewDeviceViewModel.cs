@@ -39,15 +39,7 @@ namespace PrismMauiApp.ViewModels.Devices
             this.RaisePropertyChanged(nameof(this.CanContinue));
         }
 
-        public override async Task OnNavigatedToAsync(NavigationMode navigationMode, INavigationParameters parameters)
-        {
-            if (navigationMode == NavigationMode.New)
-            {
-                await this.InitAsync();
-            }
-        }
-
-        private async Task InitAsync()
+        public override void Initialize(INavigationParameters parameters)
         {
             this.IsBusy = true;
 
@@ -94,9 +86,9 @@ namespace PrismMauiApp.ViewModels.Devices
                     this.Devices.Clear();
                     timeoutCts.CancelAfter(TimeSpan.FromSeconds(10));
 
-                    var ssids = await this.networkService.ScanAsync(cts.Token);
+                    //var ssids = await this.networkService.ScanAsync(cts.Token);
 
-                    await Task.Delay(1000);
+                    await Task.Delay(2000);
 
                     this.Devices.Add(new DeviceItemViewModel(() => this.RaisePropertyChanged(nameof(this.CanContinue)))
                     {
