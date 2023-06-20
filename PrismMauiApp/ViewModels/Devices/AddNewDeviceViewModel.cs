@@ -77,18 +77,17 @@ namespace PrismMauiApp.ViewModels.Devices
             this.IsScanning = true;
 
             var timeoutCts = new CancellationTokenSource();
+            timeoutCts.CancelAfter(TimeSpan.FromSeconds(10));
 
             try
             {
                 using (var cts = CancellationTokenSource.CreateLinkedTokenSource(timeoutCts.Token, cancellationToken))
                 {
-
                     this.Devices.Clear();
-                    timeoutCts.CancelAfter(TimeSpan.FromSeconds(10));
 
                     //var ssids = await this.networkService.ScanAsync(cts.Token);
 
-                    await Task.Delay(2000);
+                    await Task.Delay(2000, cts.Token);
 
                     this.Devices.Add(new DeviceItemViewModel(() => this.RaisePropertyChanged(nameof(this.CanContinue)))
                     {

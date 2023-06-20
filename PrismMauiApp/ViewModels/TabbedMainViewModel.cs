@@ -30,7 +30,6 @@ public class TabbedMainViewModel : BindableBase
 
         //var result = await request.NavigateAsync();
 
-
         var result = await this.navigationService.CreateBuilder()
            .AddNavigationPage(useModalNavigation: true)
             .AddSegment(Pages.AddNewDevicePage, s => s.UseModalNavigation())

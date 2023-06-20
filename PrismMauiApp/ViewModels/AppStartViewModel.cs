@@ -19,7 +19,7 @@
 
             try
             {
-                //await Task.Delay(2000);
+                await Task.Delay(1000);
 
                 //var result = await navigationService.CreateBuilder()
                 //.AddTabbedSegment(c => 
