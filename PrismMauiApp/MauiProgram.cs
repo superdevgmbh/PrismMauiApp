@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Globalization;
 using System.Reflection;
+using CommunityToolkit.Maui;
 using Microsoft.Extensions.Caching.InMemory;
 using NLog.Extensions.Logging;
 using PrismMauiApp.Extensions;
@@ -30,6 +31,7 @@ public static class MauiProgram
 
         var builder = MauiApp.CreateBuilder()
             .UseMauiApp<App>()
+            .UseMauiCommunityToolkit()
             //            .UseMauiCompatibility()
             //            .ConfigureMauiHandlers(handlers =>
             //            {
@@ -50,26 +52,24 @@ public static class MauiProgram
             //                });
             //#endif
             //            })
-            //.RegisterAppServices()
-            //.RegisterViews()
             .UsePrism(prism =>
             {
                 prism
-                .RegisterTypes(RegisterTypes)
-                .RegisterTypes(PlatformInitializer.RegisterTypes)
-                .OnInitialized((IContainerProvider c) =>
-                {
-
-                })
-                .OnAppStart(async (c, navigationService) =>
-                {
-                    var result = await navigationService.NavigateAsync($"/{App.Pages.AppStartPage}");
-                    if (!result.Success)
+                    .RegisterTypes(RegisterTypes)
+                    .RegisterTypes(PlatformInitializer.RegisterTypes)
+                    .OnInitialized((IContainerProvider c) =>
                     {
-                        Debug.WriteLine($"{result}");
-                        Debugger.Break();
-                    }
-                });
+
+                    })
+                    .OnAppStart(async (c, navigationService) =>
+                    {
+                        var result = await navigationService.NavigateAsync($"/{App.Pages.AppStartPage}");
+                        if (!result.Success)
+                        {
+                            Debug.WriteLine($"{result}");
+                            Debugger.Break();
+                        }
+                    });
             })
             .ConfigureFonts(fonts =>
             {
