@@ -2,9 +2,6 @@
 using Android.Content;
 using Android.Net;
 using Android.Net.Wifi;
-using Microsoft.Extensions.Logging;
-using PrismMauiApp.Services;
-using static Android.Net.ConnectivityManager;
 
 
 namespace PrismMauiApp.Platforms.Services

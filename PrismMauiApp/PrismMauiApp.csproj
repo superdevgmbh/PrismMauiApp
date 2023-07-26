@@ -25,7 +25,7 @@
     <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">23.0</SupportedOSPlatformVersion>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)' == 'net7.0'">
+  <PropertyGroup Condition=" $(TargetFramework.StartsWith('net')) == true AND $(TargetFramework.EndsWith('.0')) == true AND $(TargetFramework.Contains('-')) != true ">
     <OutputType>Library</OutputType>
   </PropertyGroup>
 
@@ -46,7 +46,6 @@
     <MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
   </ItemGroup>
 
-
   <!-- Android -->
   <ItemGroup Condition="$(TargetFramework.StartsWith('net7.0-android')) != true">
     <Compile Remove="**\**\*.Android.cs" />
@@ -63,7 +62,6 @@
     <None Include="**\iOS\**\*.cs" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)" />
   </ItemGroup>
 
-  
   <!-- .NET (generic) -->
   <ItemGroup Condition="!($(TargetFramework.StartsWith('net')) == true AND $(TargetFramework.EndsWith('.0')) == true AND $(TargetFramework.Contains('-')) != true)">
     <!-- e.g net6.0 or net7.0 (and higher) -->
@@ -74,13 +72,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Platforms\Any\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="Resources\Images\ic_add.svg" />
-    <None Remove="Resources\Images\ic_close.svg" />
-    <None Remove="Resources\Images\ic_wifi.svg" />
+    <None Remove="Resources\Images\*.svg" />
   </ItemGroup>
 
   <ItemGroup>
@@ -138,6 +130,10 @@
     <MauiXaml Update="Views\AboutPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Services\Plattforms\" />
   </ItemGroup>
 
   <ProjectExtensions>

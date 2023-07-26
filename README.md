@@ -3,8 +3,9 @@ This is a .NET MAUI sample app based on Prism.Maui. The app facilitates several 
 - Bootstrapping
 - Dependency injection
 - Logging
-- MVVM architecture
-- Command-based navigation
+- Data binding (MVVM)
+- Page navigation
+- Unit testing platform-agnostic code
 
 ## Links
 - https://trailheadtechnology.com/so-you-want-to-migrate-a-xamarin-forms-app-to-net-maui/

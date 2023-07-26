@@ -1,4 +1,5 @@
-﻿using Xamarin.Android.Net;
+﻿using PrismMauiApp.Platforms.Services;
+using Xamarin.Android.Net;
 
 namespace PrismMauiApp.Platforms
 {
@@ -7,6 +8,7 @@ namespace PrismMauiApp.Platforms
         public static void RegisterTypes(IContainerRegistry containerRegistry)
         {
             containerRegistry.RegisterSingleton<HttpMessageHandler, AndroidMessageHandler>();
+            containerRegistry.RegisterSingleton<IWifiConnector, WifiConnector>();
         }
     }
 }

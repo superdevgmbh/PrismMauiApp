@@ -13,8 +13,11 @@
             this.navigationService = navigationService;
         }
 
-        public override async void Initialize(INavigationParameters parameters)
+        protected override async void Initialize(INavigationParameters parameters)
         {
+            // The first navigation call to the very first page must not be awaited.
+            // That's why we use async void here.
+
             this.IsBusy = true;
 
             try

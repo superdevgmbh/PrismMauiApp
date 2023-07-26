@@ -1,4 +1,8 @@
-﻿[assembly: XamlCompilation(XamlCompilationOptions.Compile)]
+﻿using System.Runtime.CompilerServices;
+
+[assembly: XamlCompilation(XamlCompilationOptions.Compile)]
+
+[assembly: InternalsVisibleTo("PrismMauiApp.Tests")]
 
 [assembly: Preserve]
 

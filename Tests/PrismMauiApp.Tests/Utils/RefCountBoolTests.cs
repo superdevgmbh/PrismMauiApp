@@ -2,7 +2,7 @@ using Moq.AutoMock;
 using PrismMauiApp.Utils;
 using PrismMauiApp.ViewModels;
 
-namespace PrismMauiApp.Tests
+namespace PrismMauiApp.Tests.Utils
 {
     public class RefCountBoolTests
     {
@@ -12,7 +12,7 @@ namespace PrismMauiApp.Tests
         {
             this.autoMocker = new AutoMocker();
         }
-       
+
         [Fact]
         public void IsBusyTest_TrueTrueFalse()
         {

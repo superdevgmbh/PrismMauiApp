@@ -31,7 +31,7 @@ namespace PrismMauiApp.ViewModels.Devices
             this.dialogService = dialogService;
         }
 
-        public override void Initialize(INavigationParameters parameters)
+        protected override void Initialize(INavigationParameters parameters)
         {
             this.IsBusy = true;
 

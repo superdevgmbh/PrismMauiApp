@@ -15,7 +15,7 @@ namespace PrismMauiApp.ViewModels
                 var count = Interlocked.CompareExchange(ref this.busyRefCount, 0, 0);
                 return count > 0 || !this.IsInitialized;
             }
-
+            
             protected set
             {
                 if (value)
@@ -36,10 +36,10 @@ namespace PrismMauiApp.ViewModels
         {
         }
 
-        private bool IsInitialized
+        public bool IsInitialized
         {
             get => this.isInitialized;
-            set
+            private set
             {
                 if (this.isInitialized != value)
                 {
@@ -80,7 +80,7 @@ namespace PrismMauiApp.ViewModels
             this.IsInitialized = true;
         }
 
-        public virtual Task InitializeAsync(INavigationParameters parameters)
+        protected virtual Task InitializeAsync(INavigationParameters parameters)
         {
             return Task.CompletedTask;
         }
@@ -91,7 +91,7 @@ namespace PrismMauiApp.ViewModels
             this.IsInitialized = true;
         }
 
-        public virtual void Initialize(INavigationParameters parameters)
+        protected virtual void Initialize(INavigationParameters parameters)
         {
         }
 

@@ -36,7 +36,6 @@
             this.identityService = identityService;
             this.networkService = networkService;
             this.displayRepository = displayRepository;
-
             this.ConnectToDisplayCommand = new AsyncRelayCommand(this.TryConnectToDisplayAsync);
             this.DisconnectWifiCommand = new AsyncRelayCommand(this.DisconnectWifi);
         }
@@ -61,7 +60,7 @@
             set => this.SetProperty(ref this.psk, value);
         }
 
-        public override async Task InitializeAsync(INavigationParameters parameters)
+        protected override async Task InitializeAsync(INavigationParameters parameters)
         {
             this.IsBusy = true;
 
