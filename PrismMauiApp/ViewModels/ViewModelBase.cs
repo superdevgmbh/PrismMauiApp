@@ -1,4 +1,7 @@
-﻿namespace PrismMauiApp.ViewModels
+﻿using System.Runtime.CompilerServices;
+using PrismMauiApp.Utils;
+
+namespace PrismMauiApp.ViewModels
 {
     public class ViewModelBase : BindableBase, INavigatedAware, IInitialize, IInitializeAsync
     {
@@ -90,6 +93,17 @@
 
         public virtual void Initialize(INavigationParameters parameters)
         {
+        }
+
+        protected virtual bool SetProperty(RefCountBool refCountBool, bool value, [CallerMemberName] string propertyName = null)
+        {
+            var hasChanged = refCountBool.SetValue(value);
+            if (hasChanged)
+            {
+                this.RaisePropertyChanged(propertyName);
+            }
+
+            return hasChanged;
         }
     }
 }

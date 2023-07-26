@@ -1,5 +1,7 @@
-﻿
+﻿[assembly: XamlCompilation(XamlCompilationOptions.Compile)]
+
 [assembly: Preserve]
+
 [assembly: XmlnsDefinition("http://prismmauiapp", "PrismMauiApp")]
 [assembly: XmlnsDefinition("http://prismmauiapp", "PrismMauiApp.Controls")]
 [assembly: XmlnsDefinition("http://prismmauiapp", "PrismMauiApp.Views")]
