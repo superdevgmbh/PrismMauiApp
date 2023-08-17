@@ -56,7 +56,7 @@ public static class MauiProgram
             .UsePrism(prism =>
             {
                 prism
-                    .RegisterTypes(RegisterServices)
+                    .RegisterTypes(RegisterTypes)
                     .RegisterTypes(RegisterPages)
 #if ANDROID || IOS
                     .RegisterTypes(PlatformInitializer.RegisterTypes)
@@ -92,6 +92,12 @@ public static class MauiProgram
         //CommunityToolkit.Mvvm.DependencyInjection.Ioc.Default.ConfigureServices(app.Services);
 
         return app;
+    }
+
+    private static void RegisterTypes(IContainerRegistry containerRegistry)
+    {
+        RegisterServices(containerRegistry);
+        RegisterPages(containerRegistry);
     }
 
     private static void RegisterServices(IContainerRegistry containerRegistry)
