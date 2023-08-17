@@ -7,9 +7,7 @@
     NavigationPage.HasBackButton="True"
     NavigationPage.HasNavigationBar="True">
     <VerticalStackLayout>
-        <Label
-            Text="Label of AboutPage"
-            HorizontalOptions="Center"
-            VerticalOptions="Center" />
+        <Label Text="{Binding PackageName, StringFormat='PackageName: {0}'}" />
+        <Label Text="{Binding DeviceModel, StringFormat='DeviceModel: {0}'}" />
     </VerticalStackLayout>
 </ContentPage>

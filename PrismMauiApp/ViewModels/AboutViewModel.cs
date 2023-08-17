@@ -1,18 +1,37 @@
 ﻿namespace PrismMauiApp.ViewModels
 {
-    public class AboutViewModel : INavigatedAware
+    public class AboutViewModel : ViewModelBase
     {
-        public AboutViewModel()
-        {
+        private readonly IDeviceInfo deviceInfo;
+        private readonly IAppInfo appInfo;
 
+        private string packageName;
+        private string deviceModel;
+
+        public AboutViewModel(
+            IDeviceInfo deviceInfo,
+            IAppInfo appInfo)
+        {
+            this.deviceInfo = deviceInfo;
+            this.appInfo = appInfo;
         }
 
-        public void OnNavigatedTo(INavigationParameters parameters)
+        public override void Initialize(INavigationParameters parameters)
         {
+            this.PackageName = this.appInfo.PackageName;
+            this.DeviceModel = this.deviceInfo.Model;
         }
 
-        public void OnNavigatedFrom(INavigationParameters parameters)
+        public string PackageName
         {
+            get => this.packageName;
+            private set => this.SetProperty(ref this.packageName, value);
+        }
+
+        public string DeviceModel
+        {
+            get => this.deviceModel;
+            private set => this.SetProperty(ref this.deviceModel, value);
         }
     }
 }

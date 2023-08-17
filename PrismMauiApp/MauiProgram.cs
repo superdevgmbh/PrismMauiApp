@@ -56,7 +56,8 @@ public static class MauiProgram
             .UsePrism(prism =>
             {
                 prism
-                    .RegisterTypes(RegisterTypes)
+                    .RegisterTypes(RegisterServices)
+                    .RegisterTypes(RegisterPages)
 #if ANDROID || IOS
                     .RegisterTypes(PlatformInitializer.RegisterTypes)
 #endif
@@ -93,27 +94,19 @@ public static class MauiProgram
         return app;
     }
 
-
-    private static void RegisterTypes(IContainerRegistry containerRegistry)
+    private static void RegisterServices(IContainerRegistry containerRegistry)
     {
         var logFileReader = new NLogFileReader(NLogLoggerConfiguration.LogFilePath);
         containerRegistry.RegisterInstance<ILogFileReader>(logFileReader);
 
-        containerRegistry.RegisterForNavigation<NavigationPage>();
-        containerRegistry.RegisterForNavigation<AppStartPage, AppStartViewModel>(App.Pages.AppStartPage);
-        containerRegistry.RegisterForNavigation<TabbedMainPage, TabbedMainViewModel>();
-        containerRegistry.RegisterForNavigation<HomePage, HomeViewModel>(App.Pages.HomePage);
-        containerRegistry.RegisterForNavigation<MainPage, MainViewModel>(App.Pages.MainPage);
-        containerRegistry.RegisterForNavigation<AddNewDevicePage, AddNewDeviceViewModel>(App.Pages.AddNewDevicePage);
-        containerRegistry.RegisterForNavigation<ConnectToDevicePage, ConnectToDeviceViewModel>(App.Pages.ConnectToDevicePage);
-        containerRegistry.RegisterForNavigation<AboutPage, AboutViewModel>(App.Pages.AboutPage);
-
-        //containerRegistry.RegisterInstance(() => Connectivity.Current);
-        containerRegistry.RegisterInstance(Connectivity.Current);
         containerRegistry.RegisterSingleton<IIdentityService, IdentityService>();
         containerRegistry.RegisterSingleton<INetworkService, NetworkService>();
-        containerRegistry.Register<ISecureStorage>(() => SecureStorage.Default);
         containerRegistry.RegisterSingleton<IDisplayRepository, DisplayRepository>();
+
+        containerRegistry.Register<IConnectivity>(() => Connectivity.Current);
+        containerRegistry.Register<ISecureStorage>(() => SecureStorage.Default);
+        containerRegistry.Register<IDeviceInfo>(() => DeviceInfo.Current);
+        containerRegistry.Register<IAppInfo>(() => AppInfo.Current);
 
         containerRegistry.RegisterSingleton<IMemoryCache, MemoryCache>();
         containerRegistry.RegisterSingleton<IApiService, ApiService>();
@@ -125,6 +118,18 @@ public static class MauiProgram
             };
         });
 
+    }
+
+    private static void RegisterPages(IContainerRegistry containerRegistry)
+    {
+        containerRegistry.RegisterForNavigation<NavigationPage>();
+        containerRegistry.RegisterForNavigation<AppStartPage, AppStartViewModel>(App.Pages.AppStartPage);
+        containerRegistry.RegisterForNavigation<TabbedMainPage, TabbedMainViewModel>();
+        containerRegistry.RegisterForNavigation<HomePage, HomeViewModel>(App.Pages.HomePage);
+        containerRegistry.RegisterForNavigation<MainPage, MainViewModel>(App.Pages.MainPage);
+        containerRegistry.RegisterForNavigation<AddNewDevicePage, AddNewDeviceViewModel>(App.Pages.AddNewDevicePage);
+        containerRegistry.RegisterForNavigation<ConnectToDevicePage, ConnectToDeviceViewModel>(App.Pages.ConnectToDevicePage);
+        containerRegistry.RegisterForNavigation<AboutPage, AboutViewModel>(App.Pages.AboutPage);
     }
 
     //static MauiAppBuilder RegisterAppServices(this MauiAppBuilder builder)
