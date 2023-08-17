@@ -11,5 +11,18 @@ public class MainApplication : MauiApplication
     {
     }
 
-    protected override MauiApp CreateMauiApp() => MauiProgram.CreateMauiApp();
+    protected override MauiApp CreateMauiApp()
+    {
+        return MauiProgram.CreateMauiApp();
+    }
+
+    public override void OnCreate()
+    {
+        base.OnCreate();
+    }
+
+    public override void OnLowMemory()
+    {
+        base.OnLowMemory();
+    }
 }

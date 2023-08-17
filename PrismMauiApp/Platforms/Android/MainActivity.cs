@@ -1,4 +1,5 @@
 ﻿using Android.App;
+using Android.Content;
 using Android.Content.PM;
 using Android.OS;
 
@@ -21,5 +22,27 @@ public class MainActivity : MauiAppCompatActivity
         Platform.OnRequestPermissionsResult(requestCode, permissions, grantResults);
 
         base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    protected override void OnNewIntent(Intent intent)
+    {
+        base.OnNewIntent(intent);
+        Platform.OnNewIntent(intent);
+    }
+
+    protected override void OnResume()
+    {
+        base.OnResume();
+        Platform.OnResume(this);
+    }
+
+    public override void OnUserInteraction()
+    {
+        base.OnUserInteraction();
+    }
+
+    protected override void OnDestroy()
+    {
+        base.OnDestroy();
     }
 }

@@ -57,7 +57,6 @@ public static class MauiProgram
             {
                 prism
                     .RegisterTypes(RegisterTypes)
-                    .RegisterTypes(RegisterPages)
 #if ANDROID || IOS
                     .RegisterTypes(PlatformInitializer.RegisterTypes)
 #endif
