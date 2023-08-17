@@ -80,7 +80,7 @@ namespace PrismMauiApp.ViewModels
             this.IsInitialized = true;
         }
 
-        protected virtual Task InitializeAsync(INavigationParameters parameters)
+        public virtual Task InitializeAsync(INavigationParameters parameters)
         {
             return Task.CompletedTask;
         }
@@ -91,7 +91,7 @@ namespace PrismMauiApp.ViewModels
             this.IsInitialized = true;
         }
 
-        protected virtual void Initialize(INavigationParameters parameters)
+        public virtual void Initialize(INavigationParameters parameters)
         {
         }
 

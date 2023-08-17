@@ -13,7 +13,7 @@
             this.navigationService = navigationService;
         }
 
-        protected override async void Initialize(INavigationParameters parameters)
+        public override async void Initialize(INavigationParameters parameters)
         {
             // The first navigation call to the very first page must not be awaited.
             // That's why we use async void here.

@@ -39,7 +39,7 @@ namespace PrismMauiApp.ViewModels.Devices
             this.RaisePropertyChanged(nameof(this.CanContinue));
         }
 
-        protected override void Initialize(INavigationParameters parameters)
+        public override void Initialize(INavigationParameters parameters)
         {
             this.IsBusy = true;
 

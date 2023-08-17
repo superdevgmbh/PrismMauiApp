@@ -60,7 +60,7 @@
             set => this.SetProperty(ref this.psk, value);
         }
 
-        protected override async Task InitializeAsync(INavigationParameters parameters)
+        public override async Task InitializeAsync(INavigationParameters parameters)
         {
             this.IsBusy = true;
 
