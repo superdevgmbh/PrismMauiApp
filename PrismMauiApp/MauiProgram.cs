@@ -5,12 +5,14 @@ using CommunityToolkit.Maui;
 using Microsoft.Extensions.Caching.InMemory;
 using NLog.Extensions.Logging;
 using PrismMauiApp.Extensions;
-#if ANDROID || IOS
-using PrismMauiApp.Platforms;
-#endif
 using PrismMauiApp.ViewModels;
 using PrismMauiApp.ViewModels.Devices;
 using PrismMauiApp.Views;
+
+#if ANDROID || IOS
+using PrismMauiApp.Platforms;
+using ZXing.Net.Maui.Controls;
+#endif
 
 namespace PrismMauiApp;
 
@@ -32,6 +34,10 @@ public static class MauiProgram
         var builder = MauiApp.CreateBuilder()
             .UseMauiApp<App>()
             .UseMauiCommunityToolkit()
+
+#if ANDROID || IOS
+            .UseBarcodeReader()
+#endif
             //            .UseMauiCompatibility()
             //            .ConfigureMauiHandlers(handlers =>
             //            {
