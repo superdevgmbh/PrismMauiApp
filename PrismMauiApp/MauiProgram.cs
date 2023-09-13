@@ -18,7 +18,6 @@ public static class MauiProgram
 {
     public static MauiApp CreateMauiApp()
     {
-
         ViewModelLocationProvider.SetDefaultViewTypeToViewModelTypeResolver((viewType) =>
         {
             var viewName = viewType.FullName.ReplaceLastOccurrence(".Views.", ".ViewModels.");
