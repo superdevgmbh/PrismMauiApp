@@ -85,16 +85,6 @@
     <PackageReference Include="Prism.DryIoc.Maui" Version="9.0.205-pre" />
     <PackageReference Include="ValueConverters.MAUI" Version="3.0.26" />
   </ItemGroup>
-
-  <ItemGroup Condition="'$(TargetFramework)' == 'net7.0-android'">
-    <PackageReference Include="ZXing.Net.Maui" Version="0.3.0-preview.1" />
-    <PackageReference Include="ZXing.Net.Maui.Controls" Version="0.3.0-preview.1" />
-  </ItemGroup>
-
-  <ItemGroup Condition="'$(TargetFramework)' == 'net7.0-ios'">
-    <PackageReference Include="ZXing.Net.Maui" Version="0.3.0-preview.1" />
-    <PackageReference Include="ZXing.Net.Maui.Controls" Version="0.3.0-preview.1" />
-  </ItemGroup>
   
   <ItemGroup>
     <Compile Update="Platforms\Android\PlatformInitializer.cs">
