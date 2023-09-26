@@ -9,6 +9,8 @@
     <SingleProject>true</SingleProject>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>disable</Nullable>
+    <IsPackable>false</IsPackable>
+    <LangVersion>latest</LangVersion>
 
     <!-- Display name -->
     <ApplicationTitle>PrismMauiApp</ApplicationTitle>
@@ -23,121 +25,171 @@
 
     <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">14.2</SupportedOSPlatformVersion>
     <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">23.0</SupportedOSPlatformVersion>
+
+    <AppendTargetFrameworkToOutputPath>true</AppendTargetFrameworkToOutputPath>
+    <AppendRuntimeIdentifierToOutputPath>true</AppendRuntimeIdentifierToOutputPath>
+
+    <Configurations>Debug;Release</Configurations>
+    <Platforms>Device;Simulator;AnyCPU</Platforms>
   </PropertyGroup>
 
   <PropertyGroup Condition=" $(TargetFramework.StartsWith('net')) == true AND $(TargetFramework.EndsWith('.0')) == true AND $(TargetFramework.Contains('-')) != true ">
+    <!-- In order to use this project as a test target, we mark it as OutputType=Library -->
     <OutputType>Library</OutputType>
   </PropertyGroup>
 
   <ItemGroup>
     <!-- App Icon -->
-    <MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#FFFFFF" />
+    <MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#FFFFFF"/>
 
     <!-- Splash Screen -->
-    <MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#FFFFFF" />
+    <MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#FFFFFF"/>
 
     <!-- Images -->
-    <MauiImage Include="Resources\Images\*" />
+    <MauiImage Include="Resources\Images\*"/>
 
     <!-- Custom Fonts -->
-    <MauiFont Include="Resources\Fonts\*" />
+    <MauiFont Include="Resources\Fonts\*"/>
 
     <!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
-    <MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
+    <MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)"/>
   </ItemGroup>
+
+  <!-- Common build properties -->
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+
+  <!-- Android build properties -->
+  <PropertyGroup Condition="$(TargetFramework.Contains('-android'))">
+    <AndroidTlsProvider>btls</AndroidTlsProvider>
+    <JavaMaximumHeapSize>1G</JavaMaximumHeapSize>
+    <AndroidEnableSGenConcurrent>false</AndroidEnableSGenConcurrent>
+    <AndroidPackageFormat>aab</AndroidPackageFormat>
+    <PublishTrimmed>false</PublishTrimmed>
+  </PropertyGroup>
+  <PropertyGroup Condition="$(TargetFramework.Contains('-android')) and '$(Configuration)' == 'Debug'">
+    <AndroidLinkMode>None</AndroidLinkMode>
+    <AndroidSupportedAbis>x86;x86_64;armeabi-v7a;arm64-v8a</AndroidSupportedAbis>
+    <AndroidSupportedAbis>armeabi-v7a;arm64-v8a</AndroidSupportedAbis>
+    <EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
+  </PropertyGroup>
+  <PropertyGroup Condition="$(TargetFramework.Contains('-android')) and '$(Configuration)' == 'Release'">
+    <AndroidLinkMode>SdkOnly</AndroidLinkMode>
+    <AndroidSupportedAbis>armeabi-v7a;arm64-v8a</AndroidSupportedAbis>
+    <!-- <AndroidDexTool>d8</AndroidDexTool> -->
+    <AndroidLinkTool>r8</AndroidLinkTool>
+  </PropertyGroup>
+
+  <!-- iOS build properties -->
+  <PropertyGroup Condition="$(TargetFramework.Contains('-ios'))">
+    <CodesignEntitlements>Platforms\iOS\Entitlements.plist</CodesignEntitlements>
+    <RuntimeIdentifier Condition="$(Platform.Contains('Device'))">ios-arm64</RuntimeIdentifier>
+    <RuntimeIdentifier Condition="$(Platform.Contains('Simulator'))">iossimulator-x64</RuntimeIdentifier>
+  </PropertyGroup>
+  <PropertyGroup Condition="$(TargetFramework.Contains('-ios')) and '$(Configuration)' == 'Debug'">
+    <CreatePackage>false</CreatePackage>
+    <ProvisioningType>automatic</ProvisioningType>
+    <CodesignKey>iPhone Developer</CodesignKey>
+    <!-- <CodesignProvision>Name of the provisioning profile</CodesignProvision> -->
+    <MtouchLink>None</MtouchLink>
+  </PropertyGroup>
+  <PropertyGroup Condition="$(TargetFramework.Contains('-ios')) and '$(Configuration)' == 'Release'">
+    <CreatePackage>true</CreatePackage>
+    <!-- <CodesignProvision>Name of the provisioning profile</CodesignProvision> -->
+    <!-- <CodesignKey>Apple Distribution: Company Nmae (0000000000)</CodesignKey> -->
+    <ArchiveOnBuild>true</ArchiveOnBuild>
+    <MtouchLink>SdkOnly</MtouchLink>
+  </PropertyGroup>
 
   <!-- Android -->
   <ItemGroup Condition="$(TargetFramework.StartsWith('net7.0-android')) != true">
-    <Compile Remove="**\**\*.Android.cs" />
-    <None Include="**\**\*.Android.cs" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)" />
-    <Compile Remove="**\Android\**\*.cs" />
-    <None Include="**\Android\**\*.cs" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)" />
+    <Compile Remove="**\**\*.Android.cs"/>
+    <None Include="**\**\*.Android.cs" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)"/>
+    <Compile Remove="**\Android\**\*.cs"/>
+    <None Include="**\Android\**\*.cs" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)"/>
   </ItemGroup>
 
   <!-- iOS -->
   <ItemGroup Condition="$(TargetFramework.StartsWith('net7.0-ios')) != true">
-    <Compile Remove="**\**\*.iOS.cs" />
-    <None Include="**\**\*.iOS.cs" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)" />
-    <Compile Remove="**\iOS\**\*.cs" />
-    <None Include="**\iOS\**\*.cs" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)" />
+    <Compile Remove="**\**\*.iOS.cs"/>
+    <None Include="**\**\*.iOS.cs" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)"/>
+    <Compile Remove="**\iOS\**\*.cs"/>
+    <None Include="**\iOS\**\*.cs" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)"/>
   </ItemGroup>
 
   <!-- .NET (generic) -->
   <ItemGroup Condition="!($(TargetFramework.StartsWith('net')) == true AND $(TargetFramework.EndsWith('.0')) == true AND $(TargetFramework.Contains('-')) != true)">
     <!-- e.g net6.0 or net7.0 (and higher) -->
-    <Compile Remove="**\*.net.cs" />
-    <None Include="**\*.net.cs" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)" />
-    <Compile Remove="**\net\**\*.cs" />
-    <None Include="**\net\**\*.cs" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)" />
+    <Compile Remove="**\*.net.cs"/>
+    <None Include="**\*.net.cs" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)"/>
+    <Compile Remove="**\net\**\*.cs"/>
+    <None Include="**\net\**\*.cs" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)"/>
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="Resources\Images\*.svg" />
+    <None Remove="Resources\Images\*.svg"/>
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="CommunityToolkit.Maui" Version="5.3.0" />
-    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1" />
-    <PackageReference Include="HttpClient.Caching" Version="1.3.7" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="7.0.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="NLog.Extensions.Logging" Version="5.3.4" />
-    <PackageReference Include="Prism.DryIoc.Maui" Version="9.0.205-pre" />
-    <PackageReference Include="ValueConverters.MAUI" Version="3.0.26" />
+    <PackageReference Include="CommunityToolkit.Maui" Version="5.3.0"/>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1"/>
+    <PackageReference Include="HttpClient.Caching" Version="1.3.7"/>
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="7.0.0"/>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3"/>
+    <PackageReference Include="NLog.Extensions.Logging" Version="5.3.4"/>
+    <PackageReference Include="Prism.DryIoc.Maui" Version="9.0.205-pre"/>
+    <PackageReference Include="ValueConverters.MAUI" Version="3.0.26"/>
   </ItemGroup>
-  
+
   <ItemGroup>
     <Compile Update="Platforms\Android\PlatformInitializer.cs">
       <ExcludeFromCurrentConfiguration>true</ExcludeFromCurrentConfiguration>
     </Compile>
-    <Compile Update="Views\Devices\ConnectToDevicePage.xaml.cs">
-      <DependentUpon>ConnectToDevicePage.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\MainPage.xaml.cs">
-      <DependentUpon>MainPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\AboutPage.xaml.cs">
-      <DependentUpon>AboutPage.xaml</DependentUpon>
-    </Compile>
   </ItemGroup>
 
   <ItemGroup>
-    <MauiXaml Update="Controls\PageActivityIndicator.xaml">
-      <Generator>MSBuild:Compile</Generator>
+    <MauiXaml Update="**\*.xaml">
+      <SubType>Designer</SubType>
     </MauiXaml>
-    <MauiXaml Update="Resources\Styles\Converters.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </MauiXaml>
-    <MauiXaml Update="Views\AppStartPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </MauiXaml>
-    <MauiXaml Update="Views\Devices\ConnectToDevicePage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </MauiXaml>
-    <MauiXaml Update="Views\Devices\AddNewDevicePage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </MauiXaml>
-    <MauiXaml Update="Views\Devices\DeviceItemTemplate.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </MauiXaml>
-    <MauiXaml Update="Views\HomePage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </MauiXaml>
-    <MauiXaml Update="Views\TabbedMainPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </MauiXaml>
-    <MauiXaml Update="Views\AboutPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </MauiXaml>
+
+    <Compile Update="**\*.xaml.cs">
+      <DependentUpon>%(Filename).xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Services\Plattforms\" />
-  </ItemGroup>
-
+  <Target Name="PrintVariables" BeforeTargets="Build">
+    <Message Importance="high" Text="----------------------"/>
+    <Message Importance="high" Text="PrintVariables for $(TargetFramework)"/>
+    <Message Importance="high" Text="Configuration: $(Configuration)"/>
+    <Message Importance="high" Text="Platform: $(Platform)"/>
+    <Message Importance="high" Text="TargetFramework: $(TargetFramework)"/>
+    <Message Importance="high" Text="RuntimeIdentifier: $(RuntimeIdentifier)"/>
+    <Message Importance="high" Text="SupportedOSPlatformVersion: $(SupportedOSPlatformVersion)"/>
+    <Message Importance="high" Text="OutputPath: $(OutputPath)"/>
+    <Message Importance="high" Text="ApplicationId: $(ApplicationId)"/>
+    <Message Importance="high" Text="ApplicationDisplayVersion: $(ApplicationDisplayVersion)"/>
+    <Message Importance="high" Text="ApplicationVersion: $(ApplicationVersion)"/>
+    <Message Importance="high" Text="----------------------"/>
+  </Target>
+  
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties XamarinHotReloadDebuggerTimeoutExceptionPrismMauiAppHideInfoBar="True" />
+      <UserProperties XamarinHotReloadDebuggerTimeoutExceptionPrismMauiAppHideInfoBar="True"/>
     </VisualStudio>
   </ProjectExtensions>
 
