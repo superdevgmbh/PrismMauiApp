@@ -36,12 +36,11 @@
 
                     <Image
                         HeightRequest="150"
-                        SemanticProperties.Description="Cute dot net bot waving hi to you!"
                         Source="weather"
                         HorizontalOptions="Center">
-                        <Image.Behaviors>
+                        <!--<Image.Behaviors>
                             <mct:IconTintColorBehavior TintColor="{StaticResource Yellow100Accent}" />
-                        </Image.Behaviors>
+                        </Image.Behaviors>-->
                     </Image>
 
                     <Label
