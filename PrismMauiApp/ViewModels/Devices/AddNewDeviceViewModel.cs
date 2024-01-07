@@ -86,21 +86,23 @@ namespace PrismMauiApp.ViewModels.Devices
                     this.Devices.Clear();
 
                     //var ssids = await this.networkService.ScanAsync(cts.Token);
+                    var ssids = new[]
+                    {
+                        "PiWeatherDisplay_3B05CA",
+                        "PiWeatherDisplay_111111",
+                        "PiWeatherDisplay_2222222",
+                    };
 
                     await Task.Delay(2000, cts.Token);
 
-                    this.Devices.Add(new DeviceItemViewModel(() => this.RaisePropertyChanged(nameof(this.CanContinue)))
+                    foreach (var ssid in ssids)
                     {
-                        SSID = "PiWeatherDisplay_3B05CA"
-                    });
-                    this.Devices.Add(new DeviceItemViewModel(() => this.RaisePropertyChanged(nameof(this.CanContinue)))
-                    {
-                        SSID = "PiWeatherDisplay_111111"
-                    });
-                    this.Devices.Add(new DeviceItemViewModel(() => this.RaisePropertyChanged(nameof(this.CanContinue)))
-                    {
-                        SSID = "PiWeatherDisplay_2222222"
-                    });
+                        var deviceItemViewModel = new DeviceItemViewModel(() => this.RaisePropertyChanged(nameof(this.CanContinue)))
+                        {
+                            SSID = ssid
+                        };
+                        this.Devices.Add(deviceItemViewModel);
+                    }
                 }
 
                 this.logger.LogDebug("ScanNetworksAsync finished successfully");
