@@ -137,11 +137,17 @@ namespace PrismMauiApp.ViewModels.Devices
             this.RaisePropertyChanged(nameof(this.CanContinue));
         }
 
-        public bool CanContinue => !this.IsScanning && !this.IsBusy && this.Devices.Any(d => d.IsChecked);
+        public bool CanContinue
+        {
+            get
+            {
+                var canContinue = !this.IsScanning && !this.IsBusy && this.Devices.Any(d => d.IsChecked);
+                return canContinue;
+            }
+        }
 
-        public ICommand ContinueCommand => this.continueCommand ??= new AsyncRelayCommand(
-            execute: this.ContinueAsync,
-            canExecute: () => !this.CanContinue);
+        public IAsyncRelayCommand ContinueCommand => this.continueCommand ??= new AsyncRelayCommand(
+            execute: this.ContinueAsync);
 
         private async Task ContinueAsync()
         {
