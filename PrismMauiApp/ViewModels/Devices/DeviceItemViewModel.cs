@@ -1,6 +1,4 @@
-﻿using System.Windows.Input;
-
-namespace PrismMauiApp.ViewModels.Devices
+﻿namespace PrismMauiApp.ViewModels.Devices
 {
     public class DeviceItemViewModel : BindableBase
     {
