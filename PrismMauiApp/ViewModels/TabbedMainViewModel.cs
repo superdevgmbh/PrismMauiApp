@@ -18,18 +18,6 @@ public class TabbedMainViewModel : BindableBase
 
     private async Task AddNewDeviceAsync()
     {
-        //await this.navigationService.NavigateAsync(App.Pages.AboutPage);
-        //var request = this.navigationService
-        //     .CreateBuilder()
-
-        //     //.UseRelativeNavigation()
-        //     .AddNavigationPage().AddParameter(KnownNavigationParameters.UseModalNavigation, true)
-        //     .AddSegment(Pages.AddNewDevicePage).AddParameter(KnownNavigationParameters.UseModalNavigation, true)
-        //    ;
-
-
-        //var result = await request.NavigateAsync();
-
         var result = await this.navigationService.CreateBuilder()
            .AddNavigationPage(useModalNavigation: true)
             .AddSegment(Pages.AddNewDevicePage, s => s.UseModalNavigation())
