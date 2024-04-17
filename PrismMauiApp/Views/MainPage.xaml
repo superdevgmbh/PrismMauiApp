@@ -46,7 +46,7 @@
                     <Label
                         FontSize="32"
                         SemanticProperties.HeadingLevel="Level1"
-                        Text="Hello, World!"
+                        Text="PiWeatherDisplay"
                         HorizontalOptions="Center" />
 
                     <Label

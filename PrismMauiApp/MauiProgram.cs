@@ -64,7 +64,7 @@ public static class MauiProgram
                     {
 
                     })
-                    .OnAppStart(async (c, navigationService) =>
+                    .CreateWindow(async (c, navigationService) =>
                     {
                         var result = await navigationService.NavigateAsync($"/{App.Pages.AppStartPage}");
                         if (!result.Success)
@@ -104,8 +104,8 @@ public static class MauiProgram
         var logFileReader = new NLogFileReader(NLogLoggerConfiguration.LogFilePath);
         containerRegistry.RegisterInstance<ILogFileReader>(logFileReader);
 
-        containerRegistry.RegisterSingleton<IIdentityService, IdentityService>();
-        containerRegistry.RegisterSingleton<INetworkService, NetworkService>();
+        containerRegistry.RegisterSingleton<IIdentityService, IdentityServiceMock>();
+        containerRegistry.RegisterSingleton<INetworkService, NetworkServiceMock>();
         containerRegistry.RegisterSingleton<IDisplayRepository, DisplayRepository>();
 
         containerRegistry.Register<IConnectivity>(() => Connectivity.Current);
@@ -127,7 +127,6 @@ public static class MauiProgram
 
     private static void RegisterPages(IContainerRegistry containerRegistry)
     {
-        containerRegistry.RegisterForNavigation<NavigationPage>();
         containerRegistry.RegisterForNavigation<AppStartPage, AppStartViewModel>(App.Pages.AppStartPage);
         containerRegistry.RegisterForNavigation<TabbedMainPage, TabbedMainViewModel>();
         containerRegistry.RegisterForNavigation<HomePage, HomeViewModel>(App.Pages.HomePage);

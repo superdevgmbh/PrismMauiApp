@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView
+    x:Class="PrismMauiApp.Views.Devices.WifiItemTemplate"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:mct="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:vm="clr-namespace:PrismMauiApp.ViewModels.Devices"
+    x:DataType="vm:WifiItemViewModel">
+    <HorizontalStackLayout Spacing="8">
+        <RadioButton
+            GroupName="Devices"
+            IsChecked="{Binding IsChecked}" />
+        <Image
+            Aspect="AspectFit"
+            Source="ic_wifi">
+            <Image.Behaviors>
+                <mct:IconTintColorBehavior TintColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource White}}" />
+            </Image.Behaviors>
+        </Image>
+        <Label
+            Text="{Binding SSID}"
+            HorizontalOptions="Center"
+            VerticalOptions="Center">
+            <Label.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding ToggleCheckedCommand}" />
+            </Label.GestureRecognizers>
+        </Label>
+    </HorizontalStackLayout>
+</ContentView>

@@ -1,19 +1,18 @@
 ﻿namespace PrismMauiApp.ViewModels.Devices
 {
-    public class DeviceItemViewModel : BindableBase
+    public class WifiItemViewModel : BindableBase
     {
         private readonly Action checkedChanged;
         private bool isChecked;
         private DelegateCommand toggleCheckedCommand;
 
-        public DeviceItemViewModel(Action checkedChanged)
+        public WifiItemViewModel(string ssid, Action checkedChanged)
         {
+            this.SSID = ssid;
             this.checkedChanged = checkedChanged;
         }
 
-        public string SSID { get; set; }
-
-        public string PSK { get; set; }
+        public string SSID { get; }
 
         public bool IsChecked
         {

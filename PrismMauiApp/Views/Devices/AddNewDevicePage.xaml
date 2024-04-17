@@ -8,11 +8,6 @@
     xmlns:vm="clr-namespace:PrismMauiApp.ViewModels.Devices"
     Title="AddNewDevicePage"
     x:DataType="vm:AddNewDeviceViewModel">
-    <ContentPage.ToolbarItems>
-        <ToolbarItem
-            Command="{Binding CloseCommand}"
-            IconImageSource="ic_close" />
-    </ContentPage.ToolbarItems>
 
     <ContentPage.Resources>
         <ResourceDictionary>
@@ -21,6 +16,12 @@
             </DataTemplate>
         </ResourceDictionary>
     </ContentPage.Resources>
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem
+            Command="{Binding CloseCommand}"
+            IconImageSource="ic_close" />
+    </ContentPage.ToolbarItems>
 
     <Grid>
         <ScrollView>

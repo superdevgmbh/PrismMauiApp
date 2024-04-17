@@ -1,6 +1,7 @@
 ﻿using System.Collections.Specialized;
 using PrismMauiApp.Extensions;
 using static PrismMauiApp.App;
+using System.Linq;
 
 namespace PrismMauiApp.ViewModels.Devices
 {
@@ -77,7 +78,7 @@ namespace PrismMauiApp.ViewModels.Devices
             this.IsScanning = true;
 
             var timeoutCts = new CancellationTokenSource();
-            timeoutCts.CancelAfter(TimeSpan.FromSeconds(10));
+            timeoutCts.CancelAfter(TimeSpan.FromSeconds(20));
 
             try
             {
@@ -85,21 +86,24 @@ namespace PrismMauiApp.ViewModels.Devices
                 {
                     this.Devices.Clear();
 
-                    //var ssids = await this.networkService.ScanAsync(cts.Token);
-                    var ssids = new[]
+                    //var ssids = await this.wifiConnector.GetAvailableWifis(); //TODO: Pass cts.Token
+                    //var deviceSSIDs2 = ssids
+                    //    .Where(s => s.SSID.StartsWith(Constants.DeviceNamePrefix))
+                    //    .ToArray();
+
+                    var deviceSSIDs = new (string SSID, string PSK)[]
                     {
-                        "PiWeatherDisplay_3B05CA",
-                        "PiWeatherDisplay_111111",
-                        "PiWeatherDisplay_2222222",
+                        ("PiWeatherDisplay_3B05CA", "9meEAHGp")
                     };
 
                     await Task.Delay(2000, cts.Token);
 
-                    foreach (var ssid in ssids)
+                    foreach (var ssid in deviceSSIDs)
                     {
                         var deviceItemViewModel = new DeviceItemViewModel(() => this.RaisePropertyChanged(nameof(this.CanContinue)))
                         {
-                            SSID = ssid
+                            SSID = ssid.SSID,
+                            PSK = ssid.PSK,
                         };
                         this.Devices.Add(deviceItemViewModel);
                     }
@@ -153,13 +157,23 @@ namespace PrismMauiApp.ViewModels.Devices
 
         private async Task ContinueAsync()
         {
-            var navigationParameters = new ConnectToDeviceViewModel.NavigationParameter
+            try
             {
-                SSID = "test"
-            };
-            await this.navigationService.NavigateAsync(Pages.ConnectToDevicePage, navigationParameters);
+                var selectedDevice = this.Devices.Single(d => d.IsChecked);
 
-            //await this.navigationService.NavigateAsync(Pages.ConnectToDevicePage, new (string, object)[] { ("device", this.Devices.SingleOrDefault(d => d.IsChecked)) });
+                await this.wifiConnector.ConnectToWifiAsync(selectedDevice.SSID, selectedDevice.PSK);
+
+                var navigationParameter = new ConnectToDeviceViewModel.NavigationParameter
+                {
+                    DeviceSSID = selectedDevice.SSID,
+                };
+                await this.navigationService.NavigateAsync(Pages.ConnectToDevicePage, navigationParameter);
+
+            }
+            catch (Exception ex)
+            {
+                this.logger.LogError(ex, "ContinueAsync failed with exception");
+            }
         }
 
         public ICommand CloseCommand => this.closeCommand ??= new AsyncRelayCommand(

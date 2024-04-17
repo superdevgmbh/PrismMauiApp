@@ -2,7 +2,9 @@
 {
     public interface IWifiConnector
     {
-        Task<bool> ConnectToWifi(string ssid, string password, CancellationToken token = default);
+        Task<List<WiFiInfo>> GetAvailableWifis(bool? getSignalStrenth = false);
+
+        Task<bool> ConnectToWifiAsync(string ssid, string password, CancellationToken token = default);
 
         bool DisconnectWifi(string ssid);
     }

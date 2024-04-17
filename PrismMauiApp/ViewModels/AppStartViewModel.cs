@@ -24,14 +24,10 @@
             {
                 await Task.Delay(1000);
 
-                //var result = await navigationService.CreateBuilder()
-                //.AddTabbedSegment(c => 
-                //    c.CreateTab(App.Pages.MainPage)
-                //     .CreateTab(App.Pages.AboutPage)
-                //     .SelectedTab(App.Pages.AboutPage))
-                //.NavigateAsync();
-
-                await this.navigationService.NavigateAsync($"/{App.Pages.TabbedMainPage}?selectedTab={App.Pages.MainPage}");
+                // HACK: For some Prism-reasons we have to set the selected tab to 'NavigationPage' - not MainPage or something similar.
+                var result = await this.navigationService.CreateBuilder()
+                    .AddTabbedSegment(App.Pages.TabbedMainPage, c => c.SelectedTab(App.Pages.NavigationPage))
+                    .NavigateAsync();
             }
             catch (Exception ex)
             {

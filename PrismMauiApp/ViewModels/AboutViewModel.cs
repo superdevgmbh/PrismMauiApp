@@ -1,4 +1,6 @@
-﻿namespace PrismMauiApp.ViewModels
+﻿using PrismMauiApp.Extensions;
+
+namespace PrismMauiApp.ViewModels
 {
     public class AboutViewModel : ViewModelBase
     {

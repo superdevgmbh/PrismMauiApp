@@ -1,5 +1,4 @@
 ﻿using PrismMauiApp.Model;
-using PrismMauiApp.Services.Http;
 
 namespace PrismMauiApp.Services.Login
 {

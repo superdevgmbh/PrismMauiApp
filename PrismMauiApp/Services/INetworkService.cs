@@ -2,6 +2,8 @@
 {
     public interface INetworkService
     {
-        Task<IEnumerable<string>> ScanAsync(CancellationToken cancellationToken = default);
+        Task<string[]> ScanAsync(CancellationToken cancellationToken = default);
+
+        Task ConnectToWifiAsync(string ssid, string psk);
     }
 }

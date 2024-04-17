@@ -21,7 +21,11 @@ namespace PrismMauiApp.Services.Http
         private readonly IMemoryCache memoryCache;
         private readonly ILogger logger;
 
-        public ApiService(ILogger<ApiService> logger, IApiServiceConfiguration apiServiceConfiguration, IMemoryCache memoryCache, HttpMessageHandler httpMessageHandler)
+        public ApiService(
+            ILogger<ApiService> logger,
+            IApiServiceConfiguration apiServiceConfiguration,
+            IMemoryCache memoryCache,
+            HttpMessageHandler httpMessageHandler)
             : this(logger, CreateHttpClient(apiServiceConfiguration, httpMessageHandler), memoryCache)
         {
         }

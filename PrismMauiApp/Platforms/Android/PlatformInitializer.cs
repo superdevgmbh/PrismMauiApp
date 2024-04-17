@@ -1,4 +1,4 @@
-﻿using PrismMauiApp.Platforms.Services;
+﻿using System.Net.Security;
 using Xamarin.Android.Net;
 
 namespace PrismMauiApp.Platforms
@@ -7,8 +7,16 @@ namespace PrismMauiApp.Platforms
     {
         public static void RegisterTypes(IContainerRegistry containerRegistry)
         {
-            containerRegistry.RegisterSingleton<HttpMessageHandler, AndroidMessageHandler>();
-            containerRegistry.RegisterSingleton<IWifiConnector, WifiConnector>();
+            var androidMessageHandler = new AndroidMessageHandler
+            {
+                //ServerCertificateCustomValidationCallback = (httpRequestMessage, certificate, chain, sslPolicyErrors) =>
+                //{
+                //    return certificate?.Issuer == "CN=WeatherDisplay" || sslPolicyErrors == SslPolicyErrors.None;
+                //}
+            };
+
+            containerRegistry.RegisterSingleton<HttpMessageHandler>(() => androidMessageHandler);
+            containerRegistry.RegisterSingleton<IWifiConnector, WifiConnectorMock>();
         }
     }
 }

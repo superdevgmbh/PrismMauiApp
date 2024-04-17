@@ -130,33 +130,6 @@
         <BuildIpa>true</BuildIpa>
     </PropertyGroup>
 
-    <!--    TODO: MAUI-->
-    <!-- Platform-specific file includes for Android -->
-    <ItemGroup Condition="$(TargetFramework.StartsWith('net8.0-android')) != true">
-        <Compile Remove="**\**\*.Android.cs" />
-        <None Include="**\**\*.Android.cs" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)" />
-        <Compile Remove="**\Android\**\*.cs" />
-        <None Include="**\Android\**\*.cs" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)" />
-    </ItemGroup>
-
-    <!--    TODO: MAUI-->
-    <!-- Platform-specific file includes for iOS -->
-    <ItemGroup Condition="$(TargetFramework.StartsWith('net8.0-ios')) != true">
-        <Compile Remove="**\**\*.iOS.cs" />
-        <None Include="**\**\*.iOS.cs" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)" />
-        <Compile Remove="**\iOS\**\*.cs" />
-        <None Include="**\iOS\**\*.cs" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)" />
-    </ItemGroup>
-
-  <!-- .NET (generic) -->
-  <ItemGroup Condition="!($(TargetFramework.StartsWith('net')) == true AND $(TargetFramework.EndsWith('.0')) == true AND $(TargetFramework.Contains('-')) != true)">
-    <!-- e.g net6.0 or net7.0 (and higher) -->
-    <Compile Remove="**\*.net.cs" />
-    <None Include="**\*.net.cs" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)" />
-    <Compile Remove="**\net\**\*.cs" />
-    <None Include="**\net\**\*.cs" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)" />
-  </ItemGroup>
-    
     <!-- Platform-independent package references -->
     <ItemGroup>
       <PackageReference Include="CommunityToolkit.Maui" Version="7.0.0" />
@@ -165,7 +138,7 @@
       <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
       <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
       <PackageReference Include="NLog.Extensions.Logging" Version="5.3.7" />
-      <PackageReference Include="Prism.DryIoc.Maui" Version="9.0.271-pre" />
+      <PackageReference Include="Prism.DryIoc.Maui" Version="9.0.452-pre" />
       <PackageReference Include="ResourceLoader" Version="3.2.4" />
       <PackageReference Include="ValueConverters.MAUI" Version="3.0.26" />
       <PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
@@ -187,4 +160,6 @@
         <Message Importance="high" Text="ApplicationVersion: $(ApplicationVersion)" />
         <Message Importance="high" Text="----------------------" />
     </Target>
+
+    <ProjectExtensions><VisualStudio><UserProperties XamarinHotReloadDebuggerTimeoutExceptionPrismMauiAppHideInfoBar="True" /></VisualStudio></ProjectExtensions>
 </Project>

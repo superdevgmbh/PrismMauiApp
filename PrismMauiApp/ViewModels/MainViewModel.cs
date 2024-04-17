@@ -11,11 +11,12 @@
         private readonly IPageDialogService dialogService;
         private readonly IConnectivity connectivity;
 
-        private string text = "Click me";
         private string ssid = "PiWeatherDisplay_3B05CA";
-        private string psk = "T8cvDH11";
+        private string psk = "9meEAHGp";
+
         private readonly string username = "pi";
         private readonly string password = "raspberry";
+
         private DisplayConfiguration displayConfiguration;
 
         public MainViewModel(
@@ -40,13 +41,7 @@
             this.DisconnectWifiCommand = new AsyncRelayCommand(this.DisconnectWifi);
         }
 
-        public string Title => "Main Page";
-
-        public string Text
-        {
-            get => this.text;
-            private set => this.SetProperty(ref this.text, value);
-        }
+        public string Title => "MainPage";
 
         public string SSID
         {
@@ -134,7 +129,7 @@
 
         private async Task ConnectToDisplayAsync(string ssid, string psk, string username, string password)
         {
-            var success = await this.wifiConnector.ConnectToWifi(ssid, psk);
+            var success = await this.wifiConnector.ConnectToWifiAsync(ssid, psk);
             if (success)
             {
                 await this.identityService.LoginAsync(username, password);
@@ -147,8 +142,6 @@
                 };
                 await this.displayRepository.AddOrUpdateDisplayConfigurationAsync(displayConfiguration);
 
-                var ssids = await this.networkService.ScanAsync();
-                await this.dialogService.DisplayAlertAsync("Scan Result", string.Join(Environment.NewLine, ssids), "OK cool");
 
                 this.DisplayConfiguration = displayConfiguration;
             }

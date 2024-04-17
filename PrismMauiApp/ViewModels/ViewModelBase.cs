@@ -3,7 +3,7 @@ using PrismMauiApp.Utils;
 
 namespace PrismMauiApp.ViewModels
 {
-    public class ViewModelBase : BindableBase, INavigatedAware, IInitialize, IInitializeAsync
+    public class ViewModelBase : BindableBase, INavigatedAware
     {
         private bool isInitialized = false;
         private int busyRefCount = 0;
@@ -15,7 +15,7 @@ namespace PrismMauiApp.ViewModels
                 var count = Interlocked.CompareExchange(ref this.busyRefCount, 0, 0);
                 return count > 0 || !this.IsInitialized;
             }
-            
+
             protected set
             {
                 if (value)
@@ -54,9 +54,21 @@ namespace PrismMauiApp.ViewModels
         async void INavigatedAware.OnNavigatedTo(INavigationParameters parameters)
         {
             var navigationMode = parameters.GetNavigationMode();
+            if (navigationMode == NavigationMode.New)
+            {
+                this.Initialize(parameters);
+                await this.InitializeAsync(parameters);
+                this.IsInitialized = true;
+            }
+
+            this.OnNavigatedTo(navigationMode, parameters);
             await this.OnNavigatedToAsync(navigationMode, parameters);
         }
 
+
+        public virtual void OnNavigatedTo(NavigationMode navigationMode, INavigationParameters parameters)
+        {
+        }
 
         public virtual Task OnNavigatedToAsync(NavigationMode navigationMode, INavigationParameters parameters)
         {
@@ -74,21 +86,9 @@ namespace PrismMauiApp.ViewModels
             return Task.CompletedTask;
         }
 
-        async Task IInitializeAsync.InitializeAsync(INavigationParameters parameters)
-        {
-            await this.InitializeAsync(parameters);
-            this.IsInitialized = true;
-        }
-
         public virtual Task InitializeAsync(INavigationParameters parameters)
         {
             return Task.CompletedTask;
-        }
-
-        void IInitialize.Initialize(INavigationParameters parameters)
-        {
-            this.Initialize(parameters);
-            this.IsInitialized = true;
         }
 
         public virtual void Initialize(INavigationParameters parameters)

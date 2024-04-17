@@ -3,10 +3,19 @@
     x:Class="PrismMauiApp.Views.ConnectToDevicePage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:deviesViewModels="clr-namespace:PrismMauiApp.ViewModels.Devices"
     xmlns:deviesViews="clr-namespace:PrismMauiApp.Views.Devices"
+    xmlns:vm="clr-namespace:PrismMauiApp.ViewModels.Devices"
     Title="ConnectToDevicePage"
-    x:DataType="deviesViewModels:ConnectToDeviceViewModel">
+    x:DataType="vm:ConnectToDeviceViewModel">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <DataTemplate x:Key="WifiItemTemplate">
+                <deviesViews:WifiItemTemplate />
+            </DataTemplate>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
     <ContentPage.ToolbarItems>
         <ToolbarItem
             Command="{Binding CancelCommand}"
@@ -21,7 +30,19 @@
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
-                <Grid Grid.Row="0">
+                <VerticalStackLayout
+                    Grid.Row="0"
+                    IsVisible="{Binding IsBusy, Converter={StaticResource BoolInverter}}"
+                    Spacing="20">
+                    <VerticalStackLayout
+                        BindableLayout.ItemTemplate="{StaticResource WifiItemTemplate}"
+                        BindableLayout.ItemsSource="{Binding SSIDs}" />
+                    <!--<Button
+                        Command="{Binding ScanCommand}"
+                        Text="Scan Wifis" />-->
+                </VerticalStackLayout>
+
+                <!--<Grid Grid.Row="0">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
@@ -38,7 +59,7 @@
                         Grid.Row="0"
                         IsVisible="{Binding IsBusy}"
                         Text="Connecting to device..." />
-                </Grid>
+                </Grid>-->
 
                 <Button
                     Grid.Row="1"
