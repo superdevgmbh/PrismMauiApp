@@ -97,7 +97,7 @@
     <PropertyGroup Condition="$(TargetFramework.Contains('-android')) and '$(Configuration)' == 'Debug'">
         <AndroidLinkMode>None</AndroidLinkMode>
         <RuntimeIdentifiers>android-arm;android-arm64;android-x86;android-x64</RuntimeIdentifiers>
-        <EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
+        <EmbedAssembliesIntoApk>false</EmbedAssembliesIntoApk>
     </PropertyGroup>
     <PropertyGroup Condition="$(TargetFramework.Contains('-android')) and '$(Configuration)' == 'Release'">
         <AndroidLinkMode>SdkOnly</AndroidLinkMode>
@@ -106,6 +106,7 @@
         <AndroidLinkTool>r8</AndroidLinkTool>
         <RunAOTCompilation>true</RunAOTCompilation>
         <AndroidEnableProfiledAot>true</AndroidEnableProfiledAot>
+        <EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
     </PropertyGroup>
 
     <!-- iOS build properties -->
