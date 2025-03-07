@@ -140,7 +140,7 @@
       <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
       <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
       <PackageReference Include="NLog.Extensions.Logging" Version="5.3.7" />
-      <PackageReference Include="Prism.DryIoc.Maui" Version="9.0.452-pre" />
+      <PackageReference Include="Prism.DryIoc.Maui" Version="9.0.515-rc-g34befea409" />
       <PackageReference Include="ResourceLoader" Version="3.2.4" />
       <PackageReference Include="ValueConverters.MAUI" Version="3.0.26" />
       <PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
