@@ -6,14 +6,14 @@
     xmlns:android="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.AndroidSpecific;assembly=Microsoft.Maui.Controls"
     xmlns:ios="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;assembly=Microsoft.Maui.Controls"
     xmlns:prism="http://prismlibrary.com"
-    xmlns:viewmodels="clr-namespace:PrismMauiApp.ViewModels"
     xmlns:views="clr-namespace:PrismMauiApp.Views"
+    xmlns:vm="clr-namespace:PrismMauiApp.ViewModels"
     Title="TabbedMainPage"
     android:TabbedPage.IsSmoothScrollEnabled="False"
     android:TabbedPage.IsSwipePagingEnabled="False"
     android:TabbedPage.ToolbarPlacement="Bottom"
     ios:TabbedPage.TranslucencyMode="Default"
-    x:DataType="viewmodels:TabbedMainViewModel">
+    x:DataType="vm:TabbedMainViewModel">
 
     <Page.ToolbarItems>
         <ToolbarItem
