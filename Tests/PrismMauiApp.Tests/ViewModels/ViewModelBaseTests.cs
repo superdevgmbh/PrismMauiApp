@@ -60,7 +60,7 @@ namespace PrismMauiApp.Tests.ViewModels
                 this.IsBusy = false;
             }
 
-            protected override void OnBusyChanged()
+            protected override void OnBusyChanged(bool isBusy)
             {
                 this.busyDelegate?.Invoke();
             }

@@ -65,7 +65,7 @@ namespace PrismMauiApp.ViewModels.Devices
             private set => this.SetProperty(ref this.ssids, value);
         }
 
-        protected override void OnBusyChanged()
+        protected override void OnBusyChanged(bool busy)
         {
             this.RaisePropertyChanged(nameof(this.CanContinue));
         }

@@ -138,7 +138,7 @@ namespace PrismMauiApp.ViewModels.Devices
 
         public ObservableCollection<DeviceItemViewModel> Devices { get; } = new ObservableCollection<DeviceItemViewModel>();
 
-        protected override void OnBusyChanged()
+        protected override void OnBusyChanged(bool busy)
         {
             this.RaisePropertyChanged(nameof(this.CanContinue));
         }
